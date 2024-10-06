@@ -7,17 +7,17 @@ export const GET=(req)=>{
     let pid=(new URL(req.url).searchParams).get("pid");
 
 
-    // Get creator name from cid and pid
-    let name="Harshit"
-    let imageUnPaid="https://fileinfo.com/img/ss/xl/jpg_44-2.jpg"
-    let titleUnPaid="premium title"
-    let contentUnPaid="premium title"
+    // Get following using cid and pid
+    let creatorName="Harshit"
+    let imageUnPaid=new URL("/favicon.ico",new URL(req.url).origin).toString()
+    let titleUnPaid=`${creatorName}'s Premium Content`
+    let contentUnPaid=`This is a premium content. In order to view the content you must be subscribed to ${creatorName}. Please click verify to verify your subscription or purchase one`
 
     const payload={
-        icon: new URL("/favicon.ico",new URL(req.url).origin).toString(),
+        icon: imageUnPaid,
         label:"Verify",
-        description:`This is a premium content. In order to view the content you must be subscribed to ${name}. Please click verify to verify your subscription or purchase one`,
-        title:`${name}'s Premium Content`,
+        description:contentUnPaid,
+        title: titleUnPaid,
     }
 
     return Response.json(payload,{
@@ -57,7 +57,7 @@ export const POST=async (req)=>{
         const connection=new Connection(clusterApiUrl("devnet"))
         transaction.recentBlockhash=(await connection.getLatestBlockhash()).blockhash
 
-        // if Account is in subscriber's list of cid
+        // if Account (account) is in subscriber's list of cid 
         if(true){
             // Get all the below using cid and pid
             let imagePaid="https://fileinfo.com/img/ss/xl/jpg_44-2.jpg"
