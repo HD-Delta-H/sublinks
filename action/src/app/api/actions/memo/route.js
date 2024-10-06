@@ -5,19 +5,41 @@ import { clusterApiUrl, ComputeBudgetInstruction, ComputeBudgetProgram, Connecti
 export const GET=(req)=>{
     let cid=(new URL(req.url).searchParams).get("cid");
     let pid=(new URL(req.url).searchParams).get("pid");
+    let payload;
+
 
 
     // Get following using cid and pid
+    let payPerView=true; 
     let creatorName="Harshit"
     let imageUnPaid=new URL("/favicon.ico",new URL(req.url).origin).toString()
     let titleUnPaid=`${creatorName}'s Premium Content`
     let contentUnPaid=`This is a premium content. In order to view the content you must be subscribed to ${creatorName}. Please click verify to verify your subscription or purchase one`
+    let price = 10; //price of payPerVew only
 
-    const payload={
-        icon: imageUnPaid,
-        label:"Verify",
-        description:contentUnPaid,
-        title: titleUnPaid,
+
+
+   
+    if(payPerView){
+        payload={
+            icon: imageUnPaid,
+            label:"Proceed & Pay",
+            description:"The following content can be only be viewed once, after successful payment.",
+            title:`Subscription Price : $${price}`,
+            links:{
+                actions:[{
+                    label:"Proceed & Pay",
+                    href:`/api/actions/memo?cid=${cid}&pid=${pid}&pay=1`
+                }]
+            }
+        }
+    }else{
+        payload={
+            icon: imageUnPaid,
+            label:"Verify",
+            description:contentUnPaid,
+            title: titleUnPaid,
+        }
     }
 
     return Response.json(payload,{
@@ -58,19 +80,23 @@ export const POST=async (req)=>{
         const connection=new Connection(clusterApiUrl("devnet"))
         transaction.recentBlockhash=(await connection.getLatestBlockhash()).blockhash
 
+
+
         // Get below conditions from Mongo
-        let payPerView=true;
-        let subscribed=true;
+        let subscribed=true; // (can be per post or overall)
+
         // Get below data using pid and cid
         let imagePaid="https://fileinfo.com/img/ss/xl/jpg_44-2.jpg"
         let titlePaid="premium title"
         let contentPaid="premium content "
-        let price = 10;
+        let price = 10;//price of subscription only
         let imageUnPaid=new URL("/favicon.ico",new URL(req.url).origin).toString()
                 
 
+
+
         if(pay==1){
-            //Pay Transaction
+            //Pay Transaction goes Here
             payload=await createPostResponse({
                 fields:{
                     transaction,
@@ -82,7 +108,7 @@ export const POST=async (req)=>{
                                 icon: imagePaid,
                                 description:contentPaid,
                                 title:titlePaid,
-                                label:"Subscribed",
+                                label:"Payment Successful",
                                 disabled:true
                             }
                         }
