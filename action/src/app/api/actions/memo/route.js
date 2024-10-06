@@ -31,6 +31,7 @@ export const POST=async (req)=>{
     try{
         let cid=(new URL(req.url).searchParams).get("cid");
         let pid=(new URL(req.url).searchParams).get("pid");
+        let pay=(new URL(req.url).searchParams).get("pay");
         const body=await req.json()
         let account,payload;
         try{
@@ -57,13 +58,19 @@ export const POST=async (req)=>{
         const connection=new Connection(clusterApiUrl("devnet"))
         transaction.recentBlockhash=(await connection.getLatestBlockhash()).blockhash
 
-        // if Account (account) is in subscriber's list of cid 
-        if(true){
-            // Get all the below using cid and pid
-            let imagePaid="https://fileinfo.com/img/ss/xl/jpg_44-2.jpg"
-            let titlePaid="premium title"
-            let contentPaid="premium content "
+        // Get below conditions from Mongo
+        let payPerView=true;
+        let subscribed=true;
+        // Get below data using pid and cid
+        let imagePaid="https://fileinfo.com/img/ss/xl/jpg_44-2.jpg"
+        let titlePaid="premium title"
+        let contentPaid="premium content "
+        let price = 10;
+        let imageUnPaid=new URL("/favicon.ico",new URL(req.url).origin).toString()
+                
 
+        if(pay==1){
+            //Pay Transaction
             payload=await createPostResponse({
                 fields:{
                     transaction,
@@ -82,28 +89,54 @@ export const POST=async (req)=>{
                     }
                 }
             })
-
         }else{
-            //Pay Transaction
-            payload=await createPostResponse({
-                fields:{
-                    transaction,
-                    message:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                    links:{
-                        next:{
-                            type:"inline",
-                            action:{
-                                icon: "https://fileinfo.com/img/ss/xl/jpg_44-2.jpg",
-                                label:"send memo",
-                                description:"hello2",
-                                title:"Memo 2",
+            if(subscribed){
+                payload=await createPostResponse({
+                    fields:{
+                        transaction,
+                        message:"hi",
+                        links:{
+                            next:{
+                                type:"inline",
+                                action:{
+                                    icon: imagePaid,
+                                    description:contentPaid,
+                                    title:titlePaid,
+                                    label:"Subscribed",
+                                    disabled:true
+                                }
                             }
                         }
                     }
-                }
-            })
+                })
+                
+            }else{
+                payload=await createPostResponse({
+                    fields:{
+                        transaction,
+                        message:"Not Paid",
+                        links:{
+                            next:{
+                                type:"inline",
+                                action:{
+                                    icon: imageUnPaid,
+                                    label:"Proceed & Pay",
+                                    description:"The following content can be only be accessed after successful payment.",
+                                    title:`Subscription Price : $${price}`,
+                                    links:{
+                                        actions:[{
+                                            label:"Proceed & Pay",
+                                            href:`/api/actions/memo?cid=${cid}&pid=${pid}&pay=1`
+                                        }]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+            
         }
-
         return Response.json(payload,{headers:ACTIONS_CORS_HEADERS})
     }catch(err){
         return Response.json(err,{status:400,headers:ACTIONS_CORS_HEADERS})
