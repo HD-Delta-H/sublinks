@@ -72,9 +72,9 @@ export const POST=async (req)=>{
                         next:{
                             type:"inline",
                             action:{
-                                icon: ImagePaid,
-                                description:ContentPaid,
-                                title:TitlePaid,
+                                icon: imagePaid,
+                                description:contentPaid,
+                                title:titlePaid,
                                 label:"Subscribed",
                                 disabled:true
                             }
