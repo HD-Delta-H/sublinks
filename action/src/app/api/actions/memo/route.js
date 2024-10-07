@@ -10,27 +10,28 @@ export const GET=(req)=>{
 
 
     // Get following using cid and pid
-    let payPerView=false; 
+    let payPerView=true; 
     let creatorName="Harshit"
     let imageUnPaid=new URL("/favicon.ico",new URL(req.url).origin).toString()
     let titleUnPaid=`${creatorName}'s Premium Content`
     let contentUnPaid=`This is a premium content. In order to view the content you must be subscribed to ${creatorName}. Please click verify to verify your subscription or purchase one`
-    let price = 10; //price of payPerVew only
+    let subscriptionPrice = 10; // s
+    let price = 10; // s
 
 
-
-   
     if(payPerView){
         payload={
             icon: imageUnPaid,
-            label:"Proceed & Pay",
-            description:"The following content can be only be viewed once, after successful payment.",
-            title:`Subscription Price : $${price}`,
+            label:"Verify",
+            description:contentUnPaid,
+            title: titleUnPaid,
             links:{
-                actions:[{
-                    label:"Proceed & Pay",
-                    href:`/api/actions/memo?cid=${cid}&pid=${pid}&pay=1`
-                }]
+                actions:[
+                    {
+                        label:`View Once for $${price}`,
+                        href:`/api/actions/memo?cid=${cid}&pid=${pid}&pay=1`
+                    }
+                ]
             }
         }
     }else{
@@ -39,8 +40,21 @@ export const GET=(req)=>{
             label:"Verify",
             description:contentUnPaid,
             title: titleUnPaid,
+            links:{
+                actions:[
+                    {
+                        label:"Verify Subscription",
+                        href:`/api/actions/memo?cid=${cid}&pid=${pid}`
+                    },
+                    {
+                        label:`Subscribe for $${subscriptionPrice}`,
+                        href:`/api/actions/memo?cid=${cid}&pid=${pid}&pay=1`
+                    }
+                ]
+            }
         }
     }
+
 
     return Response.json(payload,{
         headers:ACTIONS_CORS_HEADERS
@@ -94,7 +108,7 @@ export const POST=async (req)=>{
 
 
         // Get below conditions from Mongo
-        let subscribed=true; // (can be per post or overall)
+        let subscribed=false; // (can be per post or overall)
 
         // Get below data using pid and cid
         let imagePaid="https://fileinfo.com/img/ss/xl/jpg_44-2.jpg"
