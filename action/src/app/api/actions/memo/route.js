@@ -75,12 +75,6 @@ export const POST=async (req)=>{
                 toPubkey: "5azNmbuv4jJbuGPZUEjZq98rxn2PBjaYUnsTfE5ov43R",
                 lamports: 0.0001 * LAMPORTS_PER_SOL
             }),
-            SystemProgram.transfer({
-                fromPubkey: account,
-                toPubkey: "3qF6nWibfcyq2o9w66s4vMojeLXFu8RNHdij5V8xEav9",
-                lamports: 0.0001 * LAMPORTS_PER_SOL
-            }),
-            
         )
         transaction.feePayer=account
         const connection=new Connection(clusterApiUrl("devnet"))
