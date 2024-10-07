@@ -1,5 +1,5 @@
 import {ActionGetResponse, ACTIONS_CORS_HEADERS, createPostResponse, MEMO_PROGRAM_ID} from "@solana/actions"
-import { clusterApiUrl, ComputeBudgetInstruction, ComputeBudgetProgram, Connection, PublicKey, Transaction, TransactionInstruction } from "@solana/web3.js";
+import { clusterApiUrl, ComputeBudgetInstruction, ComputeBudgetProgram, Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram } from "@solana/web3.js";
 
 
 export const GET=(req)=>{
@@ -10,7 +10,7 @@ export const GET=(req)=>{
 
 
     // Get following using cid and pid
-    let payPerView=true; 
+    let payPerView=false; 
     let creatorName="Harshit"
     let imageUnPaid=new URL("/favicon.ico",new URL(req.url).origin).toString()
     let titleUnPaid=`${creatorName}'s Premium Content`
@@ -70,6 +70,17 @@ export const POST=async (req)=>{
             ComputeBudgetProgram.setComputeUnitPrice({
                 microLamports:1000,
             }),
+            // SystemProgram.transfer({
+            //     fromPubkey: account.publicKey,
+            //     toPubkey: to,
+            //     lamports: 0.0001 * LAMPORTS_PER_SOL
+            // }),
+            // SystemProgram.transfer({
+            //     fromPubkey: account.publicKey,
+            //     toPubkey: to,
+            //     lamports: 0.0001 * LAMPORTS_PER_SOL
+            // }),
+            
             new TransactionInstruction({
                 programId:new PublicKey(MEMO_PROGRAM_ID),
                 data:Buffer.from("Verifying...","utf-8"),
