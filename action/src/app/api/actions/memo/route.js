@@ -1,5 +1,5 @@
 import {ActionGetResponse, ACTIONS_CORS_HEADERS, createPostResponse, MEMO_PROGRAM_ID} from "@solana/actions"
-import { clusterApiUrl, ComputeBudgetInstruction, ComputeBudgetProgram, Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram } from "@solana/web3.js";
+import { clusterApiUrl, ComputeBudgetInstruction, ComputeBudgetProgram, Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram,LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 
 export const GET=(req)=>{
@@ -64,28 +64,23 @@ export const POST=async (req)=>{
                 headers:ACTIONS_CORS_HEADERS
             })
         }
-
         const transaction=new Transaction()
+        console.log(LAMPORTS_PER_SOL)
         transaction.add(
             ComputeBudgetProgram.setComputeUnitPrice({
                 microLamports:1000,
             }),
-            // SystemProgram.transfer({
-            //     fromPubkey: account.publicKey,
-            //     toPubkey: to,
-            //     lamports: 0.0001 * LAMPORTS_PER_SOL
-            // }),
-            // SystemProgram.transfer({
-            //     fromPubkey: account.publicKey,
-            //     toPubkey: to,
-            //     lamports: 0.0001 * LAMPORTS_PER_SOL
-            // }),
+            SystemProgram.transfer({
+                fromPubkey: account,
+                toPubkey: "5azNmbuv4jJbuGPZUEjZq98rxn2PBjaYUnsTfE5ov43R",
+                lamports: 0.0001 * LAMPORTS_PER_SOL
+            }),
+            SystemProgram.transfer({
+                fromPubkey: account,
+                toPubkey: "3qF6nWibfcyq2o9w66s4vMojeLXFu8RNHdij5V8xEav9",
+                lamports: 0.0001 * LAMPORTS_PER_SOL
+            }),
             
-            new TransactionInstruction({
-                programId:new PublicKey(MEMO_PROGRAM_ID),
-                data:Buffer.from("Verifying...","utf-8"),
-                keys:[],
-            })
         )
         transaction.feePayer=account
         const connection=new Connection(clusterApiUrl("devnet"))
