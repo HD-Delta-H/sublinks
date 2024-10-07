@@ -3,6 +3,8 @@ import { useState } from 'react'
 
 export default function Form() {
   const [isPaid, setIsPaid] = useState(false)
+
+  // use these values
   const [formValues, setFormValues] = useState({
     unpaidTitle:  'Unpaid Title',
     paidTitle:  'Paid Title',
@@ -12,6 +14,12 @@ export default function Form() {
     unpaidImage: '',
     paidImage: ''
   })
+
+
+  const submissionHandler=(e)=>{
+    // Send Data to Mongo Here
+  }
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -51,7 +59,14 @@ export default function Form() {
           {isPaid ? formValues.paidContent : formValues.unpaidContent}
         </div>
       
-        <button className="px-4 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">Verify</button>
+          {!isPaid ?
+          <div className='flex flex-col'>
+            <button className="px-4 mb-2 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">Verify Subscription</button>
+            <button className="px-4 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">View Once: ${formValues.price}</button>
+          </div>
+          : 
+          <button className="cursor-not-allowed px-4 py-2 bg-[--primary-dark] text-white rounded-lg shadow-md">Purchased</button>
+          }
       </div>
 
       {/* Right-side Form */}
@@ -95,10 +110,10 @@ export default function Form() {
               className="block w-full p-2 mt-1 border border-purple-300 rounded-md"
             />
           </label>
-          <div className='flex'>
+          <div className='flex '>
 
             <label className='text-left text-lg'>
-              Price
+              View Once Price
               <input
                 type="text"
                 name={'price'}
@@ -108,9 +123,9 @@ export default function Form() {
                 />
             </label>
 
-            <label for="image-input" className='text-left text-lg ml-20 image-input-label'>
+            <label for="image-input" className=' mb-8 text-left text-lg ml-20 image-input-label'>
               Image
-              <div className='bg-[--primary-mid] text-white pl-7 overflow-hidden h-3/5 block w-32 p-2 mt-1 border rounded-md '>
+              <div className='bg-[--primary-dark] cursor-pointer text-white pl-7 overflow-hidden h-3/5 block w-32 p-2 mt-1 border rounded-md '>
               <input
                 id="image-input"
                 type="file"
@@ -121,6 +136,7 @@ export default function Form() {
                 </div>
             </label>
           </div>
+          <button onClick={()=>{submissionHandler()}} className="px-4 py-3 self-end w-1/4 bg-[--primary-mid] text-white rounded-lg shadow-md">Save Blink</button>
         </div>
       </div>
     </div>
