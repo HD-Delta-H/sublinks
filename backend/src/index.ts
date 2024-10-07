@@ -1,7 +1,8 @@
 import express, { Application, NextFunction, Request, Response, } from 'express';
 import mongoose from 'mongoose';
-// import featureRoutes from './routes/feature.route';
-// import config from './config';
+import creatorRoutes from './routes/creator.route';
+import blinkRoutes from './routes/blinkPost.route';
+import config from './config';
 import "dotenv/config";
 import cors from 'cors'; 
 
@@ -13,11 +14,10 @@ app.use(express.json());
 app.use(cors());
 
 // Connect to MongoDB
-// mongoose.connect(config.mongoURI);
+mongoose.connect(config.mongoURI);
 
-// app.use('/features', featureRoutes);
-// app.use('/users', userRoutes);
-// app.use('/products', productRoutes);
+app.use('/creator', creatorRoutes);
+app.use('/blinks', blinkRoutes);
 
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
