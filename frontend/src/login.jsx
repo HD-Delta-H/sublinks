@@ -7,10 +7,11 @@ import axios from "axios";
 function LoginPage() {
  
   console.log("LoginPage component rendered");
-  const navigate = useNavigate();
-  const { authenticate } = useOkto();
-  const [authToken, setAuthToken] = useState();
 
+  const navigate = useNavigate();
+  const { authenticate,authenticateWithUserId } = useOkto();
+  const [authToken, setAuthToken] = useState();
+useOkto().authenticateWithUserId()
   const BASE_URL = "https://sandbox-api.okto.tech";
   const OKTO_CLIENT_API = import.meta.env.VITE_OKTO_CLIENT_API_KEY;
  
@@ -38,17 +39,26 @@ function LoginPage() {
   const handleGoogleLogin = async (credentialResponse) => {
     console.log("Google login response:", credentialResponse);
     const idToken = credentialResponse.credential;
-
     console.log("google idtoken: ", idToken);
-    authenticateUser(idToken)
     authenticate(idToken, async (authResponse, error) => {
       if (authResponse) {
+        console.log("Authentication check: ", authResponse);
+        setAuthToken(authResponse.auth_token);
+        if (!authToken && authResponse.action === "signup") {
+          console.log("User Signup");
+          const pinToken = authResponse.token;
+          await setPin(idToken, pinToken, "0000");
+          await authenticate(idToken, async (res, err) => {
+            if (res) {
+              setAuthToken(res.auth_token);
+            }
+          });
+        }
         console.log("auth token received", authToken);
         navigate("/home");
-        setAuthToken(authResponse.auth_token);
       }
       if (error) {
-        console.error("Auth error:", error);
+        console.error("Authentication error:", error);
       }
     });
   };
