@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
   --primary-dark: #844B9F;
@@ -20,7 +20,7 @@
   height: 100%;
   width: 100%;
 
-}
+}*/
 
 #root {
   height: 100%;
@@ -32,16 +32,10 @@ body {
   width: 100%;
 }
 
-button {
-  background-color: var(--primary-dark);
-  color: white;
-  padding: 15px 2rem;
-}
-
 @layer base {
   :root {
     --radius: 0.5rem;
 
   }
 
-}
+} 

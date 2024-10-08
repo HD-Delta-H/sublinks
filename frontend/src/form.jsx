@@ -1,184 +1,243 @@
-
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { API_URL } from './App'
+import { AppBar } from "@/components/AppBar";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from './components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Button } from "@/components/ui/button"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { uploadFileToFirebase } from './utils/uploadFileToFirebase';
+import toast from "react-hot-toast";
+import { useNavigate } from 'react-router-dom';
 
 export default function Form() {
-  const [isPaid, setIsPaid] = useState(false)
+  const [isPaid, setIsPaid] = useState(false);
+  const [subType, setSubType] = useState('ppv');
+  const navigate = useNavigate();
 
-  let subsciptionPrice=100
+  const [ file, setFile ] = useState(null);
 
-  // use these values
+  let subsciptionPrice = 100;
+
   const [formValues, setFormValues] = useState({
-    unpaidTitle:  'Unpaid Title',
-    paidTitle:  'Paid Title',
+    unpaidTitle: 'Preview Title',
+    paidTitle: 'Paid Title',
     unpaidContent: 'Unpaid Content',
     paidContent: 'Paid Content',
     price: 0.0,
-    payPerView: true,
-    unpaidImage: '',
-    paidImage: ''
-  })
+    payPerView: subType === 'ppv',
+    unpaidImage: null,
+    paidImage: null
+  });
 
-
-  const submissionHandler = () => {
-    axios.post(`${API_URL}/api/blink`, {
-      title: isPaid ? formValues.paidTitle : formValues.unpaidTitle,
-      content: isPaid ? formValues.paidContent : formValues.unpaidContent,
-      price: formValues.price,
-      payPerView: formValues.payPerView,
-      image: isPaid ? formValues.paidImage : formValues.unpaidImage
-    })
-  }
-
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormValues({ ...formValues, [name]: value })
-  }
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    const reader = new FileReader()
-    const fieldName = isPaid ? 'paidImage' : 'unpaidImage'
-
-    reader.onloadend = () => {
-      setFormValues({ ...formValues, [fieldName]: reader.result })
+  const handleUpload = async () => {
+    if (!file) {
+      toast.error('Please select a file to upload');
+      return;
     }
 
-    if (file) reader.readAsDataURL(file)
-  }
+    try {
+      const downloadUrl = await uploadFileToFirebase(file);
+      if (isPaid) {
+        setFormValues({ ...formValues, paidImage: downloadUrl });
+      } else {
+        setFormValues({ ...formValues, unpaidImage: downloadUrl });
+      }
+      toast.success('File uploaded successfully');
+    } catch (error) {
+      toast.error('File upload failed');
+      console.error('Upload error:', error);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files?.[0];
+    setFile(selectedFile);
+  };
+
+  const submissionHandler = async () => {
+    console.log('Form submitted:', formValues);
+    if (formValues.price === 0 && subType === 'ppv') {
+      toast.error('Please enter a price');
+      return;
+    }
+    try {
+      const response = await axios.post(`${API_URL}/blinks/create`, {
+        title: formValues.unpaidTitle,
+        content: formValues.unpaidContent,
+        image:  formValues.unpaidImage,
+        premiumTitle: formValues.paidTitle,
+        premiumImage: formValues.paidImage,
+        premiumContent : formValues.paidContent,
+        type: subType,
+        price: formValues.price,
+        creator: "670449abb7773151b100853d",
+      });
+  
+      // Handle success response
+      console.log('Success:', response.data);
+      toast.success('Blink created successfully');
+      navigate('/home');
+    } catch (error) {
+      // Handle error response
+      console.error('Error:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
+
+  useEffect(() => {
+    setFormValues({ ...formValues, payPerView: subType === 'ppv' });
+  }, [subType]);
+
+  const handleNextClick = () => {
+    setFile(null);
+    setIsPaid((value) => !value);
+    setFormValues({
+      ...formValues,
+      payPerView: subType === 'ppv', // Update the payPerView based on the selected type
+    });
+  };
 
   return (
-    <div className="flex justify-center items-center px-40 pt-32 pl-48">
-
-      {/* Left-side Preview */}
-      <div className="flex flex-col p-4 w-1/3   bg-white  rounded-lg shadow-lg break-words">
-        <div className="w-full  rounded-lg mb-4">
-          {isPaid && formValues.paidImage ? (
-            <img src={formValues.paidImage} alt="Preview" className="object-cover h-full w-full" />
-          ) : formValues.unpaidImage ? (
-            <img src={formValues.unpaidImage} alt="Preview" className="object-cover h-full w-full" />
-          ) : (
-            <div className="text-center text-gray-500 bg-slate-300 h-80 flex justify-center items-center">No image uploaded</div>
-          )}
-        </div>
-        <div className="mb-2 text-lg font-bold">
-          {isPaid ? formValues.paidTitle  : formValues.unpaidTitle }
-        </div>
-        <div className="mb-2">
-          {isPaid ? formValues.paidContent : formValues.unpaidContent}
-        </div>
-      
-          {!isPaid ?
-          <div className='flex flex-col'>
-            {!formValues.payPerView ?
-              <button className="px-4 mb-2 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">View Once For ${formValues.price}</button>
-              :
-              <div className='flex flex-col'>
-                <button className="px-4 mb-2 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">Verify Subscription</button>
-                <button className="px-4 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">Subscribe For ${subsciptionPrice}</button>
-              </div>
-            }
-          </div>
-          : 
-          <button className="cursor-not-allowed px-4 py-2 bg-[--primary-dark] text-white rounded-lg shadow-md">Purchased</button>
-          }
-          
+    <div className="h-screen flex-col flex items-center bg-gray-50">
+      <div className="w-full">
+        <AppBar />
       </div>
 
-      {/* Right-side Form */}
-      <div className="flex-1 ml-6 p-6 self-start">
-        {/* Paid/Unpaid Toggle */}
-        <div className='flex justify-between '>
-          <div className="cursor-pointer flex border border-purple-300 mb-6 w-fit bg-white rounded-lg overflow-hidden ">
-            <button
-              className={`px-4 py-2  ${!isPaid ? 'bg-[--primary-mid]' : 'bg-transparent text-[--primary-mid]'}`}
-              onClick={() => setIsPaid(!isPaid)}
-              >
-              Unpaid
-            </button>
-            <button
-              className={`px-4 py-2 ${isPaid ? 'bg-[--primary-mid]' : 'bg-transparent text-[--primary-mid]'}`}
-              onClick={() => setIsPaid(!isPaid)}
-              >
-              Paid
-            </button>
+      <div className="w-full px-4 sm:px-10 lg:px-10 lg:w-[1000px] mt-12 mb-5 flex gap-10">
+        <div className='flex flex-col gap-4 flex-1'>
+          <div className='flex flex-col gap-2'>
+            <h1 className='font-bold text-2xl'>
+              { isPaid ? 'Premium Content' : 'Setup Preview' }
+             </h1>
+            <p>{ isPaid ? 'This is what users see after paying.' : 'This is what users see at first' }</p>
           </div>
-          <button onClick={()=>{submissionHandler()}} className="px-4  py-2 self-start w-1/4 bg-[--primary-mid] text-white rounded-lg shadow-md">Save Blink</button>
-        </div>
 
-        {/* Form */}
-        <div className="flex flex-col space-y-4 ">
-          <label className='text-left text-lg'>
-            Title
-            <input
-              type="text"
+          <div className='gap-1 flex flex-col'>
+            <Label className="text-sm text-gray-500">
+              {isPaid ? 'Title' : 'Preview Title'}
+            </Label>
+            <Input
+              id={isPaid ? 'paidTitle' : 'unpaidTitle'}
               name={isPaid ? 'paidTitle' : 'unpaidTitle'}
               value={isPaid ? formValues.paidTitle : formValues.unpaidTitle}
               onChange={handleInputChange}
-              className="block w-full p-2 mt-1 border border-purple-300 rounded-md"
+              className="text-md"
             />
-          </label>
+          </div>
 
-          <label className='text-left text-lg'>
-            Content
-            <textarea
+          <div>
+            <Label className="text-sm text-gray-500">
+              {isPaid ? 'Content' : 'Preview Content'}
+            </Label>
+            <Textarea
               name={isPaid ? 'paidContent' : 'unpaidContent'}
               value={isPaid ? formValues.paidContent : formValues.unpaidContent}
               onChange={handleInputChange}
-              className="block w-full p-2 mt-1 border border-purple-300 rounded-md"
+              className="bg-white text-md"
             />
-          </label>
-          <div className='flex justify-between'>
+          </div>
 
-            <label className='text-left text-lg'>
-              View Once Price
-              <input
-                type="text"
-                name={'price'}
-                value={ formValues.price}
-                onChange={handleInputChange}
-                className={`block w-full p-2 mt-1 border border-purple-300 rounded-md `}
-                />
-            </label>
-
-            <label for="image-input" className=' mb-8 text-left text-lg image-input-label'>
-              Image
-              <div className='bg-[--primary-mid] cursor-pointer text-white pl-7 overflow-hidden h-3/5 block w-32 p-2 mt-1 border rounded-md '>
-              <input
-                id="image-input"
-                type="file"
-                onChange={handleFileChange}
-                className="w-full h-full"
-                />
-                Upload
-                </div>
-            </label>
-            <div className='h-full text-left text-lg'>
-              Subscription or Pay Per View
-            <div className="mt-1 cursor-pointer h-full flex border border-purple-300 mb-6 w-fit bg-white rounded-lg overflow-hidden ">
-              <button
-                className={`px-4 py-2  ${!formValues.payPerView ? 'bg-[--primary-mid]' : 'bg-transparent text-[--primary-mid]'}`}
-                onClick={() => 
-                  setFormValues({ ...formValues, ["payPerView"]: !formValues.payPerView })
-                }
-                >
-                Subsciption
-              </button>
-              <button
-                className={`px-4 py-2 ${formValues.payPerView ? 'bg-[--primary-mid]' : 'bg-transparent text-[--primary-mid]'}`}
-                onClick={() => 
-                  setFormValues({ ...formValues, ["payPerView"]: !formValues.payPerView })
-                }
-                >
-                Per View
-              </button>
-              
-                </div>
+          <div>
+            <div className="space-y-2">
+              <Label className="text-sm text-gray-500" htmlFor="file">
+                {isPaid ? 'Image' : 'Preview Image'}
+              </Label>
+              <div className='flex gap-2'>
+                <Input id="file" type="file" onChange={handleFileChange}/>
+                <Button onClick={handleUpload}>Upload</Button>
+              </div>
             </div>
           </div>
+
+          <div className='mt-3'>
+            <RadioGroup defaultValue={subType} onValueChange={setSubType} className="flex gap-4">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="ppv" />
+                <Label className="text-sm text-gray-500">Pay Per View</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="subscription" />
+                <Label className="text-sm text-gray-500">Part of Subscription</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {subType === 'ppv' && (
+            <div>
+              <Label className="text-sm text-gray-500">
+                Price
+              </Label>
+              <Input
+                name="price"
+                value={formValues.price}
+                onChange={handleInputChange}
+                className="text-md"
+              />
+            </div>
+          )}
           
+        </div>
+
+        <div className='flex flex-col justify-start pt-10 w-2/5'>
+          <Card className="flex flex-col h-min shadow-none pt-2">
+            <CardContent className="flex flex-col gap-2 p-4">
+              {isPaid ? (
+                <img
+                  src={ formValues.paidImage !== null ? formValues.paidImage : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
+                  alt={isPaid ? formValues.paidTitle : formValues.unpaidTitle}
+                  width={400}
+                  height={300}
+                  className="object-cover h-full w-full rounded-lg"
+                /> )
+                : (
+                  <img
+                    src={ formValues.unpaidImage !== null ? formValues.unpaidImage : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
+                    alt={isPaid ? formValues.paidTitle : formValues.unpaidTitle}
+                    width={400}
+                    height={300}
+                    className="object-cover h-full w-full rounded-lg"
+                  />
+                )
+              }
+
+              <div className="flex flex-col gap-1 mb-2">
+                <div className="font-bold text-lg break-words">
+                  {isPaid ? formValues.paidTitle : formValues.unpaidTitle}
+                </div>
+                <div>{isPaid ? formValues.paidContent : formValues.unpaidContent}</div>
+              </div>
+
+              {!isPaid ? (
+                <div className="flex flex-col gap-2">
+                  {formValues.payPerView ? (
+                    <Button>View Once For ${formValues.price}</Button>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <Button>Verify Subscription</Button>
+                      <Button>Subscribe For ${subsciptionPrice}</Button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Button disabled>Purchased</Button>
+              )}
+            </CardContent>
+          </Card>
+          <div className={`flex justify-end w-full gap-3 mt-4`}>
+            <Button onClick={handleNextClick} variant={'outline'} className="w-full">
+              {isPaid ? 'Back' : 'Next'}
+            </Button>
+            <Button onClick={submissionHandler} disabled={!isPaid} className="w-full">
+              Create
+            </Button>
+          </div>
         </div>
       </div>
     </div>
