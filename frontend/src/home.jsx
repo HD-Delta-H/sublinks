@@ -16,7 +16,7 @@ function Home() {
       const walletsData = await createWallet();
       console.log(walletsData)
       setWallets(walletsData);
-      setActiveSection('wallets');
+      //setActiveSection('wallets');
     } catch (error) {
       console.log(`Failed to fetch wallets: ${error.message}`);
     }
