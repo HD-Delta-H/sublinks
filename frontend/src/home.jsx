@@ -1,6 +1,8 @@
+import LoginPage from "./login";
+
 function Home() {
     return <div>
-        home
+        <LoginPage/>
     </div>
 }
 export default Home;
