@@ -31,10 +31,22 @@ function LoginPage() {
     },
   });
  
+  const setPin = (idToken, token, reloginPin) => {
+    return apiService.post("/api/v1/set_pin", {
+      id_token: idToken,
+      token: token,
+      relogin_pin: reloginPin,
+      purpose: "set_pin",
+    });
+  };
+   const authenticateUser = (idToken) => {
+    return apiService.post("/api/v1/authenticate", { id_token: idToken });
+  };
   const handleGoogleLogin = async (credentialResponse) => {
     console.log("Google login response:", credentialResponse);
     const idToken = credentialResponse.credential;
     console.log("google idtoken: ", idToken);
+    authenticateUser(idToken)
     authenticate(idToken, async (authResponse, error) => {
       if (authResponse) {
         console.log("auth token received", authToken);
@@ -56,7 +68,6 @@ function LoginPage() {
           onError={(error) => {
             console.log("Login Failed", error);
           }}
-          useOneTap
           promptMomentNotification={(notification) =>
             console.log("Prompt moment notification:", notification)
           }
