@@ -1,26 +1,38 @@
 import {ActionGetResponse, ACTIONS_CORS_HEADERS, createPostResponse, MEMO_PROGRAM_ID} from "@solana/actions"
 import { clusterApiUrl, ComputeBudgetInstruction, ComputeBudgetProgram, Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram } from "@solana/web3.js";
 
+const API_URL = "http://localhost:8080";
 
-export const GET=(req)=>{
+const getBlinkById = async (id) => {
+    let apiResponse;
+    const externalApiUrl = `${API_URL}/blinks/${id}`;
+    const response = await fetch(externalApiUrl);
+    if (!response.ok) {
+        return null;
+    }
+    apiResponse = await response.json();
+    return apiResponse;
+}
+
+export const GET = async (req) => {
     let cid=(new URL(req.url).searchParams).get("cid");
     let pid=(new URL(req.url).searchParams).get("pid");
+
+    let apiResponse = await getBlinkById(pid);
+    
     let payload;
 
+    let payPerView = apiResponse.type == 'ppv'; 
+    let creatorName = apiResponse.creator.name
+    let imageUnPaid = apiResponse.image
+    let titleUnPaid =  apiResponse.title
+    let contentUnPaid= apiResponse.content
+    let subscriptionPrice = apiResponse.creator.subscriptionPrice
+    let price = apiResponse.price
 
 
-    // Get following using cid and pid
-    let payPerView=true; 
-    let creatorName="Harshit"
-    let imageUnPaid=new URL("/favicon.ico",new URL(req.url).origin).toString()
-    let titleUnPaid=`${creatorName}'s Premium Content`
-    let contentUnPaid=`This is a premium content. In order to view the content you must be subscribed to ${creatorName}. Please click verify to verify your subscription or purchase one`
-    let subscriptionPrice = 10; // s
-    let price = 10; // s
-
-
-    if(payPerView){
-        payload={
+    if (payPerView) {
+        payload = {
             icon: imageUnPaid,
             label:"Verify",
             description:contentUnPaid,
@@ -34,8 +46,8 @@ export const GET=(req)=>{
                 ]
             }
         }
-    }else{
-        payload={
+    } else {
+        payload = {
             icon: imageUnPaid,
             label:"Verify",
             description:contentUnPaid,
@@ -65,14 +77,16 @@ export const OPTIONS=GET;
 
 export const POST=async (req)=>{
     try{
-        let cid=(new URL(req.url).searchParams).get("cid");
-        let pid=(new URL(req.url).searchParams).get("pid");
-        let pay=(new URL(req.url).searchParams).get("pay");
-        const body=await req.json()
+        let cid = (new URL(req.url).searchParams).get("cid");
+        let pid = (new URL(req.url).searchParams).get("pid");
+        let pay = (new URL(req.url).searchParams).get("pay");
+
+        const body = await req.json()
         let account,payload;
+
         try{
-            account=new PublicKey(body.account)
-        }catch(err){
+            account = new PublicKey(body.account)
+        } catch (err) {
             return new Response("Invalid User Account",{
                 status:400,
                 headers:ACTIONS_CORS_HEADERS
@@ -101,27 +115,22 @@ export const POST=async (req)=>{
                 keys:[],
             })
         )
-        transaction.feePayer=account
-        const connection=new Connection(clusterApiUrl("devnet"))
-        transaction.recentBlockhash=(await connection.getLatestBlockhash()).blockhash
+        transaction.feePayer = account
+        const connection = new Connection(clusterApiUrl("devnet"))
+        transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash
+    
+        let apiResponse = await getBlinkById("67045415e86c1fbed46d1308");
 
+        let subscribed = false;
 
-
-        // Get below conditions from Mongo
-        let subscribed=false; // (can be per post or overall)
-
-        // Get below data using pid and cid
-        let imagePaid="https://fileinfo.com/img/ss/xl/jpg_44-2.jpg"
-        let titlePaid="premium title"
-        let contentPaid="premium content "
-        let price = 10;//price of subscription only
-        let imageUnPaid=new URL("/favicon.ico",new URL(req.url).origin).toString()
+        let imagePaid = apiResponse.premiumImage
+        let titlePaid = apiResponse.premiumTitle
+        let contentPaid = apiResponse.premiumContent
+        let price = apiResponse.price
+        let imageUnPaid = apiResponse.image
                 
 
-
-
         if(pay==1){
-            //Pay Transaction goes Here
             payload=await createPostResponse({
                 fields:{
                     transaction,
@@ -141,7 +150,7 @@ export const POST=async (req)=>{
                 }
             })
         }else{
-            if(subscribed){
+            if (subscribed) {
                 payload=await createPostResponse({
                     fields:{
                         transaction,
@@ -161,7 +170,7 @@ export const POST=async (req)=>{
                     }
                 })
                 
-            }else{
+            } else {
                 payload=await createPostResponse({
                     fields:{
                         transaction,
@@ -190,6 +199,7 @@ export const POST=async (req)=>{
         }
         return Response.json(payload,{headers:ACTIONS_CORS_HEADERS})
     }catch(err){
+        console.error(err)
         return Response.json(err,{status:400,headers:ACTIONS_CORS_HEADERS})
     }
 }
