@@ -4,6 +4,8 @@ import { useState } from 'react'
 export default function Form() {
   const [isPaid, setIsPaid] = useState(false)
 
+  let subsciptionPrice=100
+
   // use these values
   const [formValues, setFormValues] = useState({
     unpaidTitle:  'Unpaid Title',
@@ -11,6 +13,7 @@ export default function Form() {
     unpaidContent: 'Unpaid Content',
     paidContent: 'Paid Content',
     price: 0.0,
+    payPerView: true,
     unpaidImage: '',
     paidImage: ''
   })
@@ -61,31 +64,40 @@ export default function Form() {
       
           {!isPaid ?
           <div className='flex flex-col'>
-            <button className="px-4 mb-2 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">Verify Subscription</button>
-            <button className="px-4 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">View Once: ${formValues.price}</button>
+            {!formValues.payPerView ?
+              <button className="px-4 mb-2 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">View Once For ${formValues.price}</button>
+              :
+              <div className='flex flex-col'>
+                <button className="px-4 mb-2 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">Verify Subscription</button>
+                <button className="px-4 py-2 bg-[--primary-mid] text-white rounded-lg shadow-md">Subscribe For ${subsciptionPrice}</button>
+              </div>
+            }
           </div>
           : 
           <button className="cursor-not-allowed px-4 py-2 bg-[--primary-dark] text-white rounded-lg shadow-md">Purchased</button>
           }
+          
       </div>
 
       {/* Right-side Form */}
       <div className="flex-1 ml-6 p-6 self-start">
         {/* Paid/Unpaid Toggle */}
-        <div className="cursor-pointer flex border border-purple-300 mb-6 w-fit bg-white rounded-lg overflow-hidden ">
-          <button
-            className={`px-4 py-2  ${!isPaid ? 'bg-[--primary-mid]' : 'bg-transparent text-[--primary-mid]'}`}
-            onClick={() => setIsPaid(!isPaid)}
-          >
-            Unpaid
-          </button>
-          <button
-            className={`px-4 py-2 ${isPaid ? 'bg-[--primary-mid]' : 'bg-transparent text-[--primary-mid]'}`}
-            onClick={() => setIsPaid(!isPaid)}
-          >
-            Paid
-          </button>
-          
+        <div className='flex justify-between '>
+          <div className="cursor-pointer flex border border-purple-300 mb-6 w-fit bg-white rounded-lg overflow-hidden ">
+            <button
+              className={`px-4 py-2  ${!isPaid ? 'bg-[--primary-mid]' : 'bg-transparent text-[--primary-mid]'}`}
+              onClick={() => setIsPaid(!isPaid)}
+              >
+              Unpaid
+            </button>
+            <button
+              className={`px-4 py-2 ${isPaid ? 'bg-[--primary-mid]' : 'bg-transparent text-[--primary-mid]'}`}
+              onClick={() => setIsPaid(!isPaid)}
+              >
+              Paid
+            </button>
+          </div>
+          <button onClick={()=>{submissionHandler()}} className="px-4  py-2 self-start w-1/4 bg-[--primary-mid] text-white rounded-lg shadow-md">Save Blink</button>
         </div>
 
         {/* Form */}
@@ -110,7 +122,7 @@ export default function Form() {
               className="block w-full p-2 mt-1 border border-purple-300 rounded-md"
             />
           </label>
-          <div className='flex '>
+          <div className='flex justify-between'>
 
             <label className='text-left text-lg'>
               View Once Price
@@ -119,13 +131,13 @@ export default function Form() {
                 name={'price'}
                 value={ formValues.price}
                 onChange={handleInputChange}
-                className="block w-full p-2 mt-1 border border-purple-300 rounded-md"
+                className={`block w-full p-2 mt-1 border border-purple-300 rounded-md `}
                 />
             </label>
 
-            <label for="image-input" className=' mb-8 text-left text-lg ml-20 image-input-label'>
+            <label for="image-input" className=' mb-8 text-left text-lg image-input-label'>
               Image
-              <div className='bg-[--primary-dark] cursor-pointer text-white pl-7 overflow-hidden h-3/5 block w-32 p-2 mt-1 border rounded-md '>
+              <div className='bg-[--primary-mid] cursor-pointer text-white pl-7 overflow-hidden h-3/5 block w-32 p-2 mt-1 border rounded-md '>
               <input
                 id="image-input"
                 type="file"
@@ -135,8 +147,30 @@ export default function Form() {
                 Upload
                 </div>
             </label>
+            <div className='h-full text-left text-lg'>
+              Subscription or Pay Per View
+            <div className="mt-1 cursor-pointer h-full flex border border-purple-300 mb-6 w-fit bg-white rounded-lg overflow-hidden ">
+              <button
+                className={`px-4 py-2  ${!formValues.payPerView ? 'bg-[--primary-mid]' : 'bg-transparent text-[--primary-mid]'}`}
+                onClick={() => 
+                  setFormValues({ ...formValues, ["payPerView"]: !formValues.payPerView })
+                }
+                >
+                Subsciption
+              </button>
+              <button
+                className={`px-4 py-2 ${formValues.payPerView ? 'bg-[--primary-mid]' : 'bg-transparent text-[--primary-mid]'}`}
+                onClick={() => 
+                  setFormValues({ ...formValues, ["payPerView"]: !formValues.payPerView })
+                }
+                >
+                Per View
+              </button>
+              
+                </div>
+            </div>
           </div>
-          <button onClick={()=>{submissionHandler()}} className="px-4 py-3 self-end w-1/4 bg-[--primary-mid] text-white rounded-lg shadow-md">Save Blink</button>
+          
         </div>
       </div>
     </div>
