@@ -10,6 +10,17 @@ function Home() {
   const [error, setError] = useState(null);
   const { getUserDetails, getPortfolio, createWallet, transferTokens, orderHistory } = useOkto();
  
+  const [wallets, setWallets] = useState(null)
+  const fetchWallets = async () => {
+    try {
+      const walletsData = await createWallet();
+      console.log(walletsData)
+      setWallets(walletsData);
+      setActiveSection('wallets');
+    } catch (error) {
+      console.log(`Failed to fetch wallets: ${error.message}`);
+    }
+  };
   const fetchUserDetails = async () => {
     try {
       const details = await getUserDetails();
@@ -28,6 +39,13 @@ function Home() {
         <div>
           <h2>User Details:</h2>
           <pre>{JSON.stringify(userDetails, null, 2)}</pre>
+        </div>
+      )}
+      <button onClick={fetchWallets}>View Wallets</button>
+      {userDetails && (
+        <div>
+          <h2>User Wallets:</h2>
+          <pre>{JSON.stringify(wallets, null, 2)}</pre>
         </div>
       )}
     </div>

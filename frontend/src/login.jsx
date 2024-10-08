@@ -9,7 +9,7 @@ function LoginPage() {
   console.log("LoginPage component rendered");
 
   const navigate = useNavigate();
-  const { authenticate,authenticateWithUserId } = useOkto();
+  const { authenticate,authenticateWithUserId,getWallets } = useOkto();
   const [authToken, setAuthToken] = useState();
   const BASE_URL = "https://sandbox-api.okto.tech";
   const OKTO_CLIENT_API = import.meta.env.VITE_OKTO_CLIENT_API_KEY;
