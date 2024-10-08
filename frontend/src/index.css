@@ -37,3 +37,11 @@ button {
   color: white;
   padding: 15px 2rem;
 }
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+
+  }
+
+}
