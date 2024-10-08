@@ -55,7 +55,7 @@ function LoginPage() {
  
 
   return (
-    <div style={containerStyle}>
+    <div >
       <h1>Login</h1>
       {!authToken ? (
         <GoogleLogin
