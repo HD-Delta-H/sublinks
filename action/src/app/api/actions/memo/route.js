@@ -11,6 +11,8 @@ const getBlinkById = async (id) => {
         return null;
     }
     apiResponse = await response.json();
+    // console.log(apiResponse);
+    console.log(apiResponse.creator.subscribers)
     return apiResponse;
 }
 
@@ -22,7 +24,7 @@ export const GET = async (req) => {
     
     let payload;
 
-    let payPerView = apiResponse.type == 'ppv'; 
+    let payPerView = apiResponse.type != 'ppv'; 
     let creatorName = apiResponse.creator.name
     let imageUnPaid = apiResponse.image
     let titleUnPaid =  apiResponse.title
@@ -49,8 +51,8 @@ export const GET = async (req) => {
     } else {
         payload = {
             icon: imageUnPaid,
-            label:"Verify",
-            description:contentUnPaid,
+            label: "Verify",
+            description: contentUnPaid,
             title: titleUnPaid,
             links:{
                 actions:[
@@ -73,9 +75,9 @@ export const GET = async (req) => {
     })
 }
 
-export const OPTIONS=GET;
+export const OPTIONS = GET;
 
-export const POST=async (req)=>{
+export const POST = async (req) => {
     try{
         let cid = (new URL(req.url).searchParams).get("cid");
         let pid = (new URL(req.url).searchParams).get("pid");
@@ -94,6 +96,7 @@ export const POST=async (req)=>{
         }
 
         const transaction=new Transaction()
+
         transaction.add(
             ComputeBudgetProgram.setComputeUnitPrice({
                 microLamports:1000,
@@ -115,13 +118,16 @@ export const POST=async (req)=>{
                 keys:[],
             })
         )
+
         transaction.feePayer = account
         const connection = new Connection(clusterApiUrl("devnet"))
         transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash
     
-        let apiResponse = await getBlinkById("67045415e86c1fbed46d1308");
-
+        let apiResponse = await getBlinkById(pid);
+        
         let subscribed = false;
+
+        subscribed = apiResponse.creator.subscribers.some(subscriber => subscriber.walletAddress === account);
 
         let imagePaid = apiResponse.premiumImage
         let titlePaid = apiResponse.premiumTitle
@@ -130,8 +136,8 @@ export const POST=async (req)=>{
         let imageUnPaid = apiResponse.image
                 
 
-        if(pay==1){
-            payload=await createPostResponse({
+        if (pay == 1) {
+            payload = await createPostResponse({
                 fields:{
                     transaction,
                     message:"hi",
@@ -140,38 +146,37 @@ export const POST=async (req)=>{
                             type:"inline",
                             action:{
                                 icon: imagePaid,
-                                description:contentPaid,
-                                title:titlePaid,
-                                label:"Payment Successful",
-                                disabled:true
+                                description: contentPaid,
+                                title: titlePaid,
+                                label: "Payment Successful",
+                                disabled: true
                             }
                         }
                     }
                 }
             })
-        }else{
+        } else {
             if (subscribed) {
-                payload=await createPostResponse({
+                payload = await createPostResponse({
                     fields:{
                         transaction,
                         message:"hi",
                         links:{
                             next:{
-                                type:"inline",
+                                type: "inline",
                                 action:{
                                     icon: imagePaid,
-                                    description:contentPaid,
-                                    title:titlePaid,
-                                    label:"Subscribed",
-                                    disabled:true
+                                    description: contentPaid,
+                                    title: titlePaid,
+                                    label: "Subscribed",
+                                    disabled: true
                                 }
                             }
                         }
                     }
                 })
-                
             } else {
-                payload=await createPostResponse({
+                payload = await createPostResponse({
                     fields:{
                         transaction,
                         message:"Not Paid",
@@ -198,7 +203,7 @@ export const POST=async (req)=>{
             
         }
         return Response.json(payload,{headers:ACTIONS_CORS_HEADERS})
-    }catch(err){
+    } catch (err) {
         console.error(err)
         return Response.json(err,{status:400,headers:ACTIONS_CORS_HEADERS})
     }
