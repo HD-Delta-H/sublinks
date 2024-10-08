@@ -11,6 +11,8 @@ function Home() {
   const { getUserDetails, getPortfolio, createWallet, transferTokens, orderHistory } = useOkto();
  
   const [wallets, setWallets] = useState(null)
+  const [portfolioData, setPortfolioData] = useState(null);
+  const [orders, setOrders] = useState(null)
   const fetchWallets = async () => {
     try {
       const walletsData = await createWallet();
@@ -21,12 +23,28 @@ function Home() {
       console.log(`Failed to fetch wallets: ${error.message}`);
     }
   };
+  const fetchPortfolio = async () => {
+    try {
+      const portfolio = await getPortfolio();
+      setPortfolioData(portfolio);
+    } catch (error) {
+      console.log(`Failed to fetch portfolio: ${error.message}`);
+    }
+  };
   const fetchUserDetails = async () => {
     try {
       const details = await getUserDetails();
       setUserDetails(details);
     } catch (error) {
-      setError(`Failed to fetch user details: ${error.message}`);
+        console.log(`Failed to fetch user details: ${error.message}`);
+    }
+  };
+  const fetchOrders = async () => {
+    try {
+      const details = await orderHistory();
+      setOrders(details);
+    } catch (error) {
+      console.log(`Failed to fetch user details: ${error.message}`);
     }
   };
  
@@ -46,6 +64,20 @@ function Home() {
         <div>
           <h2>User Wallets:</h2>
           <pre>{JSON.stringify(wallets, null, 2)}</pre>
+        </div>
+      )}
+      <button onClick={fetchPortfolio}>View Portfolio</button>
+      {portfolioData && (
+        <div>
+          <h2>Portfolio:</h2>
+          <pre>{JSON.stringify(portfolioData, null, 2)}</pre>
+        </div>
+      )}
+      <button onClick={fetchOrders}>View Orders</button>
+      {orders && (
+        <div>
+          <h2>Portfolio:</h2>
+          <pre>{JSON.stringify(orders, null, 2)}</pre>
         </div>
       )}
     </div>
