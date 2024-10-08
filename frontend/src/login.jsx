@@ -11,7 +11,7 @@ function LoginPage() {
   const { authenticate } = useOkto();
   const [authToken, setAuthToken] = useState();
 
-  const BASE_URL = "https://sublinks-frontend.vercel.app/";
+  const BASE_URL = "https://sandbox-api.okto.tech";
   const OKTO_CLIENT_API = import.meta.env.VIT_OKTO_CLIENT_API_KEY;
  
   const containerStyle = {
@@ -39,9 +39,10 @@ function LoginPage() {
       if (authResponse) {
         console.log("auth token received", authToken);
         navigate("/home");
+        setAuthToken(authResponse.auth_token);
       }
       if (error) {
-        console.error("Authentication error:", error);
+        console.error("Auth error:", error);
       }
     });
   };
