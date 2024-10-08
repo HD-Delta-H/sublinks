@@ -41,7 +41,7 @@ export const getAllBlinkPosts = async (): Promise<BlinkPostDoc[]> => {
  * @returns The BlinkPost document or null if not found
  */
 export const getBlinkPostById = async (id: string): Promise<BlinkPostDoc | null> => {
-  return BlinkPost.findById(id);
+  return BlinkPost.findById(id).populate("creator");
 };
 
 /**
