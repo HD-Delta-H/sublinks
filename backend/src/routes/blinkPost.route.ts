@@ -25,7 +25,7 @@ router.post('/create', async (req, res) => {
       creator,
     } = req.body;
 
-    if (!title || !content || !image || !price || !premiumTitle || !premiumContent || !premiumImage || !type || !creator) {
+    if (!title || !content || !image || !premiumTitle || !premiumContent || !premiumImage || !type || !creator) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
