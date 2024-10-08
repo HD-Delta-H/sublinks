@@ -42,29 +42,28 @@ function Home() {
   return (
     <div >
         <LoginPage/>
-      <h1>Home Page</h1>
-      <button onClick={fetchUserDetails}>View User Details</button>
-      {userDetails && (
-        <div>
-          <h2>User Details:</h2>
-          <pre>{JSON.stringify(userDetails, null, 2)}</pre>
-        </div>
-      )}
-      <button onClick={fetchWallets}>View Wallets</button>
-      {userDetails && (
-        <div>
-          <h2>User Wallets:</h2>
-          <pre>{JSON.stringify(wallets, null, 2)}</pre>
-        </div>
-      )}
-      <button onClick={fetchPortfolio}>View Portfolio</button>
-      {portfolioData && (
-        <div>
-          <h2>Portfolio:</h2>
-          <pre>{JSON.stringify(portfolioData, null, 2)}</pre>
-        </div>
-      )}
-     
+        <h1>Home Page</h1>
+        <button onClick={fetchUserDetails}>View User Details</button>
+        {userDetails && (
+          <div>
+            <h2>User Details:</h2>
+            <pre>{JSON.stringify(userDetails, null, 2)}</pre>
+          </div>
+        )}
+        <button onClick={fetchWallets}>View Wallets</button>
+        {userDetails && (
+          <div>
+            <h2>User Wallets:</h2>
+            <pre>{JSON.stringify(wallets, null, 2)}</pre>
+          </div>
+        )}
+        <button onClick={fetchPortfolio}>View Portfolio</button>
+        {portfolioData && (
+          <div>
+            <h2>Portfolio:</h2>
+            <pre>{JSON.stringify(portfolioData, null, 2)}</pre>
+          </div>
+        )}
     </div>
   );
 }

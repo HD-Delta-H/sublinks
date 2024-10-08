@@ -1,5 +1,7 @@
 
 import { useState } from 'react'
+import axios from 'axios'
+import { API_URL } from './App'
 
 export default function Form() {
   const [isPaid, setIsPaid] = useState(false)
@@ -19,8 +21,14 @@ export default function Form() {
   })
 
 
-  const submissionHandler=(e)=>{
-    // Send Data to Mongo Here
+  const submissionHandler = () => {
+    axios.post(`${API_URL}/api/blink`, {
+      title: isPaid ? formValues.paidTitle : formValues.unpaidTitle,
+      content: isPaid ? formValues.paidContent : formValues.unpaidContent,
+      price: formValues.price,
+      payPerView: formValues.payPerView,
+      image: isPaid ? formValues.paidImage : formValues.unpaidImage
+    })
   }
 
 
