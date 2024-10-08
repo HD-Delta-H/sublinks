@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Creator, { CreatorDoc } from "../models/Creator.model";
+import Creator, { CreatorDoc, SubscriberDoc } from "../models/Creator.model";
 import BlinkPost from "../models/BlinkPost.model";
 
 /**
@@ -87,6 +87,21 @@ export const updateCreatorRevenue = async (creatorId: string, additionalRevenue:
   creator.totalRevenue += additionalRevenue;
   return creator.save();
 };
+
+export const addSubscriberToCreator = async (creatorId: string, subscriber: string): Promise<CreatorDoc | null> => {
+  const creator = await Creator.findById(creatorId);
+
+  if (!creator) {
+    throw new Error("Creator not found");
+  }
+
+  const newSubscriber : Partial<SubscriberDoc> = {
+    walletAddress: subscriber,
+  }
+
+  creator.subscribers.push(newSubscriber as unknown as SubscriberDoc);
+  return creator.save();
+}
 
 /**
  * Delete a creator by ID

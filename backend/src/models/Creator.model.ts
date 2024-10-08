@@ -8,7 +8,20 @@ export interface CreatorDoc extends Document {
   totalRevenue: number;
   walletAddress: string | null;
   subscriptionPrice: number;
+  subscribers: SubscriberDoc[];
 }
+export interface SubscriberDoc{
+  walletAddress: string;
+  date: Date;
+}
+
+const subscriberSchema: Schema = new Schema(
+  {
+    walletAddress: { type: String, required: true, unique: true },
+    date: { type: Date, default: Date.now },
+  },
+  { timestamps: true }
+);
 
 const creatorSchema: Schema = new Schema(
   {
@@ -19,7 +32,7 @@ const creatorSchema: Schema = new Schema(
     ],
     totalRevenue: { type: Number, default: 0 },
     walletAddress: { type: String },
-    subscribers: { type: [String], required: true, default: [] },
+    subscribers: [ subscriberSchema ],
     subscriptionPrice: { type: Number, default: 0 },
   },
   { timestamps: true }

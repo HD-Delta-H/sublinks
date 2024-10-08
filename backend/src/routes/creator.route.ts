@@ -8,6 +8,7 @@ import {
   updateCreatorRevenue,
   deleteCreator,
   updateCreator,
+  addSubscriberToCreator,
 } from '../services/creator.service';
 
 const router = express.Router();
@@ -114,6 +115,20 @@ router.put('/:id/revenue', async (req, res) => {
     return res.status(200).json(updatedCreator);
   } catch (err) {
     console.error('Error updating creator revenue:', err);
+    res.status(500).json(err);
+  }
+});
+
+router.put('/:id/subscriber/:address', async (req, res) => {
+  try {
+    const { id, address } = req.params;
+    const updatedCreator = await addSubscriberToCreator(id, address);
+    if (!updatedCreator) {
+      return res.status(404).json({ message: 'Creator not found' });
+    }
+    return res.status(200).json(updatedCreator);
+  } catch (err) {
+    console.error('Error updating Creator:', err);
     res.status(500).json(err);
   }
 });
