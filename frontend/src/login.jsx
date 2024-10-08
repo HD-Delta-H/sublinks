@@ -12,7 +12,7 @@ function LoginPage() {
   const [authToken, setAuthToken] = useState();
 
   const BASE_URL = "https://sandbox-api.okto.tech";
-  const OKTO_CLIENT_API = import.meta.env.VIT_OKTO_CLIENT_API_KEY;
+  const OKTO_CLIENT_API = import.meta.env.VITE_OKTO_CLIENT_API_KEY;
  
   const containerStyle = {
     display: 'flex',
@@ -42,9 +42,12 @@ function LoginPage() {
    const authenticateUser = (idToken) => {
     return apiService.post("/api/v1/authenticate", { id_token: idToken });
   };
+
+
   const handleGoogleLogin = async (credentialResponse) => {
     console.log("Google login response:", credentialResponse);
     const idToken = credentialResponse.credential;
+
     console.log("google idtoken: ", idToken);
     authenticateUser(idToken)
     authenticate(idToken, async (authResponse, error) => {
@@ -59,6 +62,7 @@ function LoginPage() {
     });
   };
  
+
   return (
     <div style={containerStyle}>
       <h1>Login</h1>

@@ -7,7 +7,7 @@ import TestPage from './pages/TestPage'
 import FileUploadForm from './pages/fire'
 import CreateBlink from './pages/CreateBlink'
 
-const OKTO_CLIENT_API_KEY = import.meta.env.VIT_OKTO_CLIENT_API_KEY;
+const OKTO_CLIENT_API_KEY = import.meta.env.VITE_OKTO_CLIENT_API_KEY;
 
 function App() {
   return (
