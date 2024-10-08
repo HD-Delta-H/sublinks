@@ -7,12 +7,10 @@ import  { useState } from 'react';
 function Home() {
     
   const [userDetails, setUserDetails] = useState(null);
-  const [error, setError] = useState(null);
   const { getUserDetails, getPortfolio, createWallet, transferTokens, orderHistory } = useOkto();
  
   const [wallets, setWallets] = useState(null)
   const [portfolioData, setPortfolioData] = useState(null);
-  const [orders, setOrders] = useState(null)
   const fetchWallets = async () => {
     try {
       const walletsData = await createWallet();
@@ -39,14 +37,7 @@ function Home() {
         console.log(`Failed to fetch user details: ${error.message}`);
     }
   };
-  const fetchOrders = async () => {
-    try {
-      const details = await orderHistory();
-      setOrders(details);
-    } catch (error) {
-      console.log(`Failed to fetch user details: ${error.message}`);
-    }
-  };
+ 
  
   return (
     <div >
@@ -73,13 +64,7 @@ function Home() {
           <pre>{JSON.stringify(portfolioData, null, 2)}</pre>
         </div>
       )}
-      <button onClick={fetchOrders}>View Orders</button>
-      {orders && (
-        <div>
-          <h2>Portfolio:</h2>
-          <pre>{JSON.stringify(orders, null, 2)}</pre>
-        </div>
-      )}
+     
     </div>
   );
 }
