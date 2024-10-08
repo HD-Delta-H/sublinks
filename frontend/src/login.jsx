@@ -11,8 +11,8 @@ function LoginPage() {
   const { authenticate } = useOkto();
   const [authToken, setAuthToken] = useState();
 
-  const BASE_URL = "http://localhost:5173/";
-  const OKTO_CLIENT_API = "0165d059-854b-406b-8688-eeaf5ebe59e8";
+  const BASE_URL = "https://sublinks-frontend.vercel.app/";
+  const OKTO_CLIENT_API = import.meta.env.VIT_OKTO_CLIENT_API_KEY;
  
   const containerStyle = {
     display: 'flex',
