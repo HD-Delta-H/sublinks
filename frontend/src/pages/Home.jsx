@@ -30,13 +30,27 @@ export const Home = () => {
   }, []);
 
   return (
-    <div className="h-screen flex-col flex items-center bg-gray-50">
+    <div className="min-h-screen h-full flex-col flex items-center bg-gray-50">
       <div className="w-full">
         <AppBar/>
       </div>
 
-     <div className="w-full px-4 sm:px-10 lg:px-10 lg:w-[900px] mt-12 mb-5 flex flex-col gap-3">
-        
+      <div className="w-full h-full px-4 sm:px-10 lg:px-10 lg:w-[900px] mt-12 mb-5 flex flex-col gap-3">
+        <div className="flex gap-4 mb-5">
+          <div className="bg-white flex flex-col gap-1 border-gray-200 border  w-full rounded-lg px-5 p-3">
+            <h1 className="text-lg font-semibold text-gray-400">Total Revenue</h1>
+            <p className="text-4xl font-bold text-gray-600">$400</p>
+          </div>
+          <div className="bg-white flex flex-col gap-1 border-gray-200 border  w-full rounded-lg px-5 p-3">
+            <h1 className="text-lg font-semibold text-gray-400">Avg Engagement</h1>
+            <p className="text-4xl font-bold text-gray-600">400</p>
+          </div>
+          <div className="bg-white flex flex-col gap-1 border-gray-200 border  w-full rounded-lg px-5 p-3">
+            <h1 className="text-lg font-semibold text-gray-400">No. of Subscribers</h1>
+            <p className="text-4xl font-bold text-gray-600">400</p>
+          </div>
+        </div>
+
         <div className="flex justify-between mb-2">
           <h2 className="text-2xl font-bold">Your Sublinks</h2>
           <Button className="px-8">Create</Button>
@@ -49,7 +63,7 @@ export const Home = () => {
             ))
           }
         </div>
-     </div>
+      </div>
     </div>
   );
 }
