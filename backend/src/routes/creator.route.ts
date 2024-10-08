@@ -7,6 +7,7 @@ import {
   addBlinkPostToCreator,
   updateCreatorRevenue,
   deleteCreator,
+  updateCreator,
 } from '../services/creator.service';
 
 const router = express.Router();
@@ -17,7 +18,7 @@ router.post('/create', async (req, res) => {
     if (!req.body) {
       return res.status(400).json({ message: 'Creator data is required' });
     }
-    if (!req.body.name || !req.body.email || !req.body.walletAddress) {
+    if (!req.body.name || !req.body.email) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
     
@@ -26,6 +27,21 @@ router.post('/create', async (req, res) => {
     return res.status(201).json(newCreator);
   } catch (err) {
     console.error('Error creating creator:', err);
+    res.status(500).json(err);
+  }
+});
+
+// Route to update a BlinkPost
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedCreator = await updateCreator(id, req.body);
+    if (!updatedCreator) {
+      return res.status(404).json({ message: 'Creator not found' });
+    }
+    return res.status(200).json(updatedCreator);
+  } catch (err) {
+    console.error('Error updating Creator:', err);
     res.status(500).json(err);
   }
 });

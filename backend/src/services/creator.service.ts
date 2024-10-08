@@ -20,6 +20,15 @@ export const createCreator = async (data: CreatorDoc): Promise<CreatorDoc> => {
 };
 
 /**
+ * Create a new creator
+ * @param args - Creator properties
+ * @returns The created creator document
+ */
+export const updateCreator = async (id: string, data: Partial<CreatorDoc>): Promise<CreatorDoc | null> => {
+  return Creator.findByIdAndUpdate(id, { ...data }, { new: true });
+};
+
+/**
  * Get all creators
  * @returns An array of all creator documents
  */
