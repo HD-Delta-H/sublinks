@@ -14,15 +14,6 @@ function LoginPage() {
   const BASE_URL = "https://sandbox-api.okto.tech";
   const OKTO_CLIENT_API = import.meta.env.VITE_OKTO_CLIENT_API_KEY;
  
-  const containerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    maxWidth: '800px',
-    margin: '0 auto',
-  };
- 
    const apiService = axios.create({
     baseURL: BASE_URL,
     headers: {
