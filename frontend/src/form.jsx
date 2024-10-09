@@ -11,11 +11,13 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { uploadFileToFirebase } from './utils/uploadFileToFirebase';
 import toast from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
+import { FaCheckCircle } from "react-icons/fa";
+import { FaCopy } from "react-icons/fa";
 
 export default function Form() {
   const [isPaid, setIsPaid] = useState(false);
   const [subType, setSubType] = useState('ppv');
-  const [ finalLink, setFinalLink ] = useState(null);
+  const [ finalPID, setFinalPID ] = useState(null);
 
   const [ file, setFile ] = useState(null);
 
@@ -83,8 +85,7 @@ export default function Form() {
       // Handle success response
       console.log('Success:', response.data._id);
       toast.success('Blink created successfully');
-      // const finalURL = {`https://sublinks.vercel.app/api/actions/memo?cid=${}&pid=${response.data._id}`};
-      // setFinalLink(true);
+      setFinalPID(response.data._id)
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
@@ -104,9 +105,17 @@ export default function Form() {
     setIsPaid((value) => !value);
     setFormValues({
       ...formValues,
-      payPerView: subType === 'ppv', // Update the payPerView based on the selected type
+      payPerView: subType === 'ppv',
     });
   };
+
+  const handleBlink = (pid) => {
+    const prefix = 'https://dial.to/?action=solana-action%3A'
+    const postfix = '&cluster=devnet'
+    const url = `https://sublinks.vercel.app/api/actions/memo?cid=sublinks&pid=${pid}`;
+    const encodedURL = encodeURIComponent(url);
+    return prefix + encodedURL+ postfix;
+  }
 
   return (
     <div className="h-screen flex-col flex items-center bg-gray-50">
@@ -114,8 +123,26 @@ export default function Form() {
         <AppBar />
       </div>
 
-      <div className="w-full px-4 sm:px-10 lg:px-10 lg:w-[1000px] mt-12 mb-5 flex gap-10">
-        <div className='flex flex-col gap-4 flex-1'>
+      <div className={`w-full px-4 sm:px-10 lg:px-10 lg:w-[1000px] mt-12 mb-5 flex gap-10 ${finalPID != null && 'justify-center'}`}>
+        {/* <Button onClick={handleBlink}>someting</Button> */}
+
+        {finalPID != null && (
+          <div className='mt-10 border pt-8 pb-4 px-10 flex flex-col gap-4 items-center text-center rounded-lg bg-white'>
+            <FaCheckCircle size={50}/>
+            <h1>Your Sublink is ready to be shared:</h1>
+            <div className='flex items-end'>
+              <h2 className='max-w-80 overflow-hidden'>{handleBlink(finalPID)}</h2><span>..</span>
+            </div>
+            <Button variant='outline' className="flex gap-1"
+              onClick={async () => {
+                await navigator.clipboard.writeText(handleBlink(finalPID));
+                toast.success('Link copied to clipboard');
+              }}
+            > <FaCopy /> Copy Link</Button>
+          </div>
+        )}
+        
+        {finalPID == null && <div className='flex flex-col gap-4 flex-1'>
           <div className='flex flex-col gap-2'>
             <h1 className='font-bold text-2xl'>
               { isPaid ? 'Premium Content' : 'Setup Preview' }
@@ -187,9 +214,9 @@ export default function Form() {
             </div>
           )}
           
-        </div>
+        </div>}
 
-        <div className='flex flex-col justify-start pt-10 w-2/5'>
+        {finalPID == null && <div className='flex flex-col justify-start pt-10 w-2/5'>
           <Card className="flex flex-col h-min shadow-none pt-2">
             <CardContent className="flex flex-col gap-2 p-4">
               {isPaid ? (
@@ -242,7 +269,7 @@ export default function Form() {
               Create
             </Button>
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   )
