@@ -58,9 +58,16 @@ function Home() {
           </div>
         )}
         <button onClick={fetchPortfolio}>View Portfolio</button>
-        {portfolioData && (
+        {userDetails && (
           <div>
             <h2>Portfolio:</h2>
+            <pre>{JSON.stringify(portfolioData, null, 2)}</pre>
+          </div>
+        )}
+        <button onClick={fetchPortfolio}>View History</button>
+        {userDetails && (
+          <div>
+            <h2>History:</h2>
             <pre>{JSON.stringify(portfolioData, null, 2)}</pre>
           </div>
         )}

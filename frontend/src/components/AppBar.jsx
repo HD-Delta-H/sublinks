@@ -31,11 +31,11 @@ export const AppBar = () => {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col items-center justify-center">
       <div className="w-full h-16 bg-white items-end flex px-4 sm:px-8 md:px-16 lg:px-20 justify-between">
                   
-          <div className="flex h-full">
-            <div className="flex h-full sm:hidden">
+          <div className="flex h-full items-center">
+            {/* <div className="flex h-full sm:hidden">
               <DropdownMenu>
                 <DropdownMenuTrigger><HiMenu size={25} className="text-primaryGreen"/></DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -45,16 +45,16 @@ export const AppBar = () => {
                   <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/founder')}>Founders View</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
-            <h1 onClick={() => navigate('/')} className="cursor-pointer text-primaryGreen ml-3 font-bold text-xl w-full flex items-center">FeatLink</h1>
+            </div> */}
+            <h1 onClick={() => navigate('/')} className="cursor-pointer text-primaryGreen ml-3 font-bold text-xl w-full flex items-center">Sublinks</h1>
             
-            <div className="sm:flex h-full hidden ml-10">
+            <div className="flex h-full  ml-10 items-center justify-center">
               <NavBarItem pathname={location.pathname} link="/home" title="Home" />
               <NavBarItem pathname={location.pathname} link="/create" title="Create Blink" />
-              <NavBarItem pathname={location.pathname} link="/my-requests" title="My Feat Requests" />
+              <NavBarItem pathname={location.pathname} link="/account" title="Accounts" />
             </div>
           </div>
-          <div className="h-full flex items-center gap-3">
+          <div className="h-full flex items-center justify-center gap-3">
             
             {/* <Button 
               onClick={async () => await navigator.clipboard.writeText(walletAddress ?? '')}
