@@ -65,6 +65,12 @@ export const Account = () => {
       <div className="w-full">
         <AppBar/>
       </div>
+      {userDetails==null?
+      <div className="w-[900px] h-60 bg-white  mt-12 flex items-center justify-center">
+        <div>Not Logged in</div>
+      </div>:
+      
+     
 
       <div className="w-full h-full px-4 sm:px-10 lg:px-10 lg:w-[900px] mt-12 mb-5 flex flex-col gap-3">
         <div className="w-full  bg-white rounded-lg  flex">
@@ -144,6 +150,7 @@ export const Account = () => {
         </div>
      
     </div>
+}
     </div>
   );
 }

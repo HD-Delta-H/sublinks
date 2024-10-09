@@ -17,7 +17,7 @@ function App() {
       <div><Toaster/></div>
       <OktoProvider apiKey={OKTO_CLIENT_API_KEY} buildType={BuildType.SANDBOX}>
       <Routes >
-        <Route path="/" element={<Home2 />} />
+        <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/create" element={<Form />} />
         <Route path="/form" element={<CreateBlink />} />

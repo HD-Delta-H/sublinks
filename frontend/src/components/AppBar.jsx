@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "/logo\ black.png"
+import { useOkto } from "okto-sdk-react";
+import { GoogleLogin } from "@react-oauth/google";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,21 +17,55 @@ export const AppBar = () => {
   const [ walletAddress, setWalletAddress ] = useState();
   const [ userData, setUserData ] = useState(null);
   const navigate = useNavigate();
+  const { getUserDetails,createWallet } = useOkto();
+  const { authenticate,authenticateWithUserId,getWallets } = useOkto();
+  const [authToken, setAuthToken] = useState();
+    const fetchWallets = async () => {
+        try {
+        const walletsData = await createWallet();
+        setWalletAddress(walletsData.wallets[0].address);
+        localStorage.setItem('walletAddress',walletsData.wallets[0].address);
+        } catch (error) {
+        console.log(`Failed to fetch wallets: ${error.message}`);
+        }
+    };
 
 
   useEffect(() => {
-      const address = localStorage.getItem('walletAddress');
-      if (address) {
-        setWalletAddress(address);
-      }
-      fetchUser();
+    const address = localStorage.getItem('walletAddress');
+    if (address) {
+      setWalletAddress(address);
+    }
+    fetchWallets();
   });
 
-  const fetchUser = async () => {
-    if (walletAddress == null) return;
-    // const data = await getUserByAddress(walletAddress);
-    // setUserData(data);
-  }
+  const handleGoogleLogin = async (credentialResponse) => {
+    console.log("Google login response:", credentialResponse);
+    const idToken = credentialResponse.credential;
+    console.log("google idtoken: ", idToken);
+    authenticate(idToken, async (authResponse, error) => {
+      if (authResponse) {
+        console.log("Authentication check: ", authResponse);
+        setAuthToken(authResponse.auth_token);
+        if (!authToken && authResponse.action === "signup") {
+          console.log("User Signup");
+          const pinToken = authResponse.token;
+        //   await setPin(idToken, pinToken, "0000");
+        //   await authenticate(idToken, async (res, err) => {
+        //     if (res) {
+        //       setAuthToken(res.auth_token);
+        //     }
+        //   });
+        }
+        console.log("auth token received", authToken);
+        //navigate("/home");
+      }
+      if (error) {
+        console.error("Authentication error:", error);
+      }
+    });
+  };
+
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -56,14 +93,24 @@ export const AppBar = () => {
           </div>
           <div className="h-full flex items-center justify-center gap-3">
             
-            {/* <Button 
-              onClick={async () => await navigator.clipboard.writeText(walletAddress ?? '')}
-              variant={'outline'} size={'appBar'} className="bg-primaryGreen/10 border-primaryGreen/50 border-2 rounded-full">
-                  { walletAddress == null 
-                    ? 'Wallet Not Connected' 
-                    : `${walletAddress.slice(0, 10)}..`
-                  }
-              </Button> */}
+            
+              { walletAddress == null 
+                ? <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                onError={(error) => {
+                  console.log("Login Failed", error);
+                }}
+                promptMomentNotification={(notification) =>
+                  console.log("Prompt moment notification:", notification)
+                }
+              />
+                : <Button 
+                onClick={async () => await navigator.clipboard.writeText(walletAddress ?? '')}
+                variant={'outline'} size={'appBar'} className="px-4 py-1 bg-primaryGreen/10 border-primaryGreen/50 border-2 rounded-full">
+                {`${walletAddress.slice(0, 10)}..`}
+                </Button>
+              }
+              
           </div>
             
 
