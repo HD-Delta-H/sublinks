@@ -51,7 +51,7 @@ export const AppBar = () => {
             <div className="flex h-full  ml-10 items-center justify-center">
               <NavBarItem pathname={location.pathname} link="/home" title="Home" />
               <NavBarItem pathname={location.pathname} link="/create" title="Create Blink" />
-              <NavBarItem pathname={location.pathname} link="/account" title="Accounts" />
+              <NavBarItem pathname={location.pathname} link="/account" title="Profile" />
             </div>
           </div>
           <div className="h-full flex items-center justify-center gap-3">
