@@ -6,12 +6,13 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useOkto } from "okto-sdk-react";
+import { Label } from "@radix-ui/react-dropdown-menu";
 
 
 const API_URL = 'https://sublinks.onrender.com';
 
 export const Account = () => {
-    const [userDetails, setUserDetails] = useState();
+    const [userDetails, setUserDetails] = useState("");
 
     const [name, setName] = useState()
     const [email, setEmail] = useState()
@@ -92,11 +93,62 @@ export const Account = () => {
                     User Details:
                 </div>
                 <div className="flex flex-col gap-4">
-                    <div>Name: {name}</div>
-                    <div>Email: {email}</div>
-                    <div>Wallet: {walletAddress.slice(0, 23)} . . .</div>
-                    <div>Price: ${subPrice}</div>
-                    <div>Subscribers: {subscribers}</div>
+                  <div className="flex items-end gap-2">
+                    <Label htmlFor="name">Name:</Label>
+                    <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value={name}
+                        onChange={(e)=>setName(e.target.value)}
+                        />
+                  </div>
+                  <div className="flex items-end gap-2">
+                    <Label htmlFor="email">Email:</Label>
+                    <Input
+                        id="email"
+                        name="email"
+                        type="text"
+                        value={email}
+                        disabled
+                        //onChange={(e)=>setEmail(e.target.value)}
+                        />
+                  </div>
+                  <div className="flex items-end gap-2">
+                    <Label htmlFor="walletAddress">Wallet:</Label>
+                    <Input
+                        id="walletAddress"
+                        name="walletAddress"
+                        type="text"
+                        value={walletAddress}
+                        disabled
+                        //onChange={(e)=>setEmail(e.target.value)}
+                        />
+                  </div>
+                  <div className="flex items-end gap-2">
+                    <Label htmlFor="subscribers">Subscribers:</Label>
+                    <Input
+                        id="subscribers"
+                        name="subscribers"
+                        type="text"
+                        value={subscribers}
+                        disabled
+                        //onChange={(e)=>setSubscribers(e.target.value)}
+                        />
+                  </div>
+                  <div className="flex items-end gap-2">
+                    <Label htmlFor="subPrice">Price:</Label>
+                    <Input
+                        id="subPrice"
+                        name="subPrice"
+                        type="text"
+                        value={subPrice}
+                        onChange={(e)=>setSubPrice(e.target.value)}
+                        />
+                  </div>
+                  <div className="mt-4 self-end">
+                  <Button>Update Details</Button>
+                  </div>
                 </div>
             </div>
             <div className="w-1/2 text-lg  flex flex-col gap-5 items-left p-4 px-9 border-l-2 border-gray-50">
