@@ -32,10 +32,7 @@ export const AppBar = () => {
 
 
   useEffect(() => {
-    const address = localStorage.getItem('walletAddress');
-    if (address) {
-      setWalletAddress(address);
-    }
+    
     fetchWallets();
   });
 
@@ -86,7 +83,7 @@ export const AppBar = () => {
             <h1 onClick={() => navigate('/')} className="cursor-pointer text-primaryGreen ml-3 font-bold text-xl w-full flex items-center">Sublinks</h1>
             
             <div className="flex h-full  ml-10 items-center justify-center">
-              <NavBarItem pathname={location.pathname} link="/home" title="Home" />
+              <NavBarItem pathname={location.pathname} link="/home" title="Explore" />
               <NavBarItem pathname={location.pathname} link="/create" title="Create Blink" />
               <NavBarItem pathname={location.pathname} link="/account" title="Profile" />
             </div>
