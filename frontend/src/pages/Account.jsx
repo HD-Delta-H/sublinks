@@ -20,7 +20,6 @@ export const Account = () => {
     const fetchWallets = async () => {
         try {
         const walletsData = await createWallet();
-        console.log(walletsData)
         setWallets(walletsData);
         } catch (error) {
         console.log(`Failed to fetch wallets: ${error.message}`);
@@ -51,7 +50,7 @@ export const Account = () => {
         fetchUserDetails()
         fetchWallets()
         fetchPortfolio()
-    })
+    },[])
     
     const [inputDev, setInputDev] = useState()
     const [quantityDev, setQuantityDev] = useState()
@@ -97,7 +96,7 @@ export const Account = () => {
                     <button className="bg-black px-5 rounded-lg text-white h-10 mt-2" onClick={()=>{
                         transferTokens({
                             network_name:"SOLANA_DEVNET",
-                            
+                            token_address:"",
                             recipient_address:inputDev,
                             quantity:quantityDev
                         })
