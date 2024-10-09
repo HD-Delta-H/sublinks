@@ -10,7 +10,7 @@ import { Home } from './pages/Home';
 import { Toaster } from "react-hot-toast";
 
 const OKTO_CLIENT_API_KEY = import.meta.env.VITE_OKTO_CLIENT_API_KEY;
-export const API_URL = 'http://localhost:8080';
+export const API_URL = 'https://sublinks.onrender.com';
 
 function App() {
   return (

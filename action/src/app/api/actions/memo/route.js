@@ -4,10 +4,10 @@ import { clusterApiUrl, ComputeBudgetInstruction, ComputeBudgetProgram, Connecti
 import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
 import { Program, BN, AnchorProvider} from '@project-serum/anchor';
 
-const API_URL = "https://9c9f1t91-8080.inc1.devtunnels.ms";
+const API_URL = "https://sublinks.onrender.com";
 
 function USD2SOL(price){
-    return price*0.66
+    return price*0.65
 }
 
 const getBlinkById = async (id) => {
@@ -192,39 +192,22 @@ export const POST = async (req) => {
 
             //let amount2=0.3
             const transaction=new Transaction()
+            console.log("amount1: ",amount1)
+            transaction.add(
+                ComputeBudgetProgram.setComputeUnitPrice({
+                    microLamports:1000,
+                }),
+                SystemProgram.transfer({
+                    fromPubkey: account,
+                    toPubkey: creatorWallet,
+                    lamports: amount1 * LAMPORTS_PER_SOL
+                }),
+            )
 
             transaction.feePayer = account
             const connection = new Connection(clusterApiUrl("devnet"))
             transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash
-            
-            const instructionData1 = Buffer.alloc(4 + 8); 
-            instructionData1.writeUInt32LE(2, 0);
-            instructionData1.writeBigUInt64LE(BigInt(amount1 * LAMPORTS_PER_SOL), 4);
-            
-            const transferInstruction1 = new TransactionInstruction({
-            keys: [
-                { pubkey: account, isSigner: true, isWritable: true },
-                { pubkey: creatorWallet, isSigner: false, isWritable: true },
-            ],
-            programId: SystemProgram.programId,
-            data: instructionData1,
-            });
-            //const instructionData2 = Buffer.alloc(4 + 8); 
-            //instructionData2.writeUInt32LE(2, 0);
-            //instructionData2.writeBigUInt64LE(BigInt(amount2 * LAMPORTS_PER_SOL), 4);
-            
-            //const transferInstruction2 = new TransactionInstruction({
-            //keys: [
-            //    { pubkey: account, isSigner: true, isWritable: true },
-            //    { pubkey: '5azNmbuv4jJbuGPZUEjZq98rxn2PBjaYUnsTfE5ov43R', isSigner: false, isWritable: true },
-            //],
-            //programId: SystemProgram.programId,
-            //data: instructionData2,
-            //});
 
-            transaction.add(
-                transferInstruction1
-            )
             //transaction.add(
             //    transferInstruction2
             //)

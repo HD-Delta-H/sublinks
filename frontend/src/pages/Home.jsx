@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-const API_URL = 'http://localhost:8080';
+const API_URL = 'https://sublinks.onrender.com';
 
 export const Home = () => {
   const [ blinks, setBlinks ] = useState([]);

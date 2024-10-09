@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Form() {
   const [isPaid, setIsPaid] = useState(false);
   const [subType, setSubType] = useState('ppv');
-  const navigate = useNavigate();
+  const [ finalLink, setFinalLink ] = useState(null);
 
   const [ file, setFile ] = useState(null);
 
@@ -63,6 +63,10 @@ export default function Form() {
       toast.error('Please enter a price');
       return;
     }
+    if (formValues.paidImage === null || formValues.unpaidImage === null) {
+      toast.error('Please upload the images');
+      return
+    }
     try {
       const response = await axios.post(`${API_URL}/blinks/create`, {
         title: formValues.unpaidTitle,
@@ -77,11 +81,11 @@ export default function Form() {
       });
   
       // Handle success response
-      console.log('Success:', response.data);
+      console.log('Success:', response.data._id);
       toast.success('Blink created successfully');
-      navigate('/home');
+      // const finalURL = {`https://sublinks.vercel.app/api/actions/memo?cid=${}&pid=${response.data._id}`};
+      // setFinalLink(true);
     } catch (error) {
-      // Handle error response
       console.error('Error:', error.response ? error.response.data : error.message);
     }
   };
