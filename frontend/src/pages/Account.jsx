@@ -117,9 +117,9 @@ export const Account = () => {
                     {tokensMain} SOL
                         </span>
                     </div>
-                    <input className="border w-full my-2 px-2 py-1 rounded-lg" type="text" placeholder="Enter Address to Send Tokens to..." value={inputMain} defaultValue={"Enter Address to Send Tokens to"}  onChange={(e)=>{setInputMain(e.target.value)}}></input>
+                    <input className="border w-full my-2 px-2 py-1 rounded-lg" type="text" placeholder="Enter Address to Send Tokens to..." value={inputMain}  onChange={(e)=>{setInputMain(e.target.value)}}></input>
                     <div className="flex justify-between">
-                    <input className="border w-1/2 my-2 px-2 py-1 rounded-lg" type="number" min={0} max={tokensMain} placeholder="Enter Quantity..." value={quantityMain} defaultValue={"Enter Address to Send Tokens to"}  onChange={(e)=>{setQuantityMain(e.target.value)}}></input>
+                    <input className="border w-1/2 my-2 px-2 py-1 rounded-lg" type="number" min={0} max={tokensMain} placeholder="Enter Quantity..." value={quantityMain}  onChange={(e)=>{setQuantityMain(e.target.value)}}></input>
                     <button className="bg-black px-5 rounded-lg text-white h-10 mt-2" onClick={()=>{
                         transferTokens({
                             network_name:"SOLANA_DEVNET",
@@ -137,16 +137,36 @@ export const Account = () => {
                     {tokensMain} SOL
                         </span>
                     </div>
-                    <input className="border w-full my-2 px-2 py-1 rounded-lg" type="text" placeholder="Enter Address to Send Tokens to..." value={inputDev} defaultValue={"Enter Address to Send Tokens to"}  onChange={(e)=>{setInputDev(e.target.value)}}></input>
+                    <input className="border w-full my-2 px-2 py-1 rounded-lg" type="text" placeholder="Enter Address to Send Tokens to..." value={inputDev}  onChange={(e)=>{setInputDev(e.target.value)}}></input>
                     <div className="flex justify-between">
-                    <input className="border w-1/2 my-2 px-2 py-1 rounded-lg" type="number" min={0} max={tokensDev} placeholder="Enter Quantity..." value={quantityDev} defaultValue={"Enter Address to Send Tokens to"}  onChange={(e)=>{setQuantityDev(e.target.value)}}></input>
+                    <input className="border w-1/2 my-2 px-2 py-1 rounded-lg" type="number" min={0} max={tokensDev} placeholder="Enter Quantity..." value={quantityDev}  onChange={(e)=>{setQuantityDev(e.target.value)}}></input>
                     <button className="bg-black px-5 rounded-lg text-white h-10 mt-2">Send</button>
                     </div>
                 </div>
             </div>
             </div>
         <div>
-
+        <button onClick={fetchUserDetails}>View User Details</button>
+        {userDetails && (
+          <div>
+            <h2>User Details:</h2>
+            <pre>{JSON.stringify(userDetails, null, 2)}</pre>
+          </div>
+        )}
+        <button onClick={fetchWallets}>View Wallets</button>
+        {userDetails && (
+          <div>
+            <h2>User Wallets:</h2>
+            <pre>{JSON.stringify(wallets, null, 2)}</pre>
+          </div>
+        )}
+        <button onClick={fetchPortfolio}>View Portfolio</button>
+        {userDetails && (
+          <div>
+            <h2>Portfolio:</h2>
+            <pre>{JSON.stringify(portfolioData, null, 2)}</pre>
+          </div>
+        )}
     
         </div>
      
