@@ -1,13 +1,13 @@
 import {ActionGetResponse, ACTIONS_CORS_HEADERS, createPostResponse, MEMO_PROGRAM_ID} from "@solana/actions"
 import { clusterApiUrl, ComputeBudgetInstruction, ComputeBudgetProgram, Connection,Keypair,  PublicKey, Transaction, TransactionInstruction, SystemProgram,LAMPORTS_PER_SOL } from "@solana/web3.js";
-
+import axios from 'axios';
 import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
 import { Program, BN, AnchorProvider} from '@project-serum/anchor';
 
 const API_URL = "https://sublinks.onrender.com";
 
-function USD2SOL(price){
-    return price*0.65
+function USD2SOL(price) {
+    return (price * 0.0065).toFixed(2);
 }
 
 const getBlinkById = async (id) => {
@@ -18,8 +18,20 @@ const getBlinkById = async (id) => {
         return null;
     }
     apiResponse = await response.json();
-    // console.log(apiResponse);
-    console.log(apiResponse.creator.subscribers)
+    return apiResponse;
+}
+
+const addSubscriberToCreator = async (id, userAddress) => {
+    console.log("Adding subscriber to creator")
+    let apiResponse;
+    const response = await axios.put(`${API_URL}/creator/${id}/subscriber/${userAddress}`)
+    console.log(response)
+    if (!response.ok) {
+        console.log("Error adding subscriber")
+        return null;
+    }
+    apiResponse = await response.json();
+    console.log(apiResponse);
     return apiResponse;
 }
 
@@ -159,16 +171,11 @@ export const POST = async (req) => {
             })
         }
 
-        
-    
-
-        
-
         let apiResponse = await getBlinkById(pid);
         
         let subscribed = false;
 
-        subscribed = apiResponse.creator.subscribers.some(subscriber => subscriber.walletAddress === account);
+        subscribed = apiResponse.creator.subscribers.some(subscriber => subscriber.walletAddress === String(account));
 
         let imagePaid = apiResponse.premiumImage
         let titlePaid = apiResponse.premiumTitle
@@ -178,8 +185,7 @@ export const POST = async (req) => {
         let creatorWallet=apiResponse.creator.walletAddress
         let subscriptionPrice=apiResponse.creator.subscriptionPrice
         let payPerView = apiResponse.type == 'ppv'; 
-        
-
+        let createdId = apiResponse.creator._id
 
         if (pay == 1) {
             let amount1;
@@ -192,7 +198,6 @@ export const POST = async (req) => {
 
             //let amount2=0.3
             const transaction=new Transaction()
-            console.log("amount1: ",amount1)
             transaction.add(
                 ComputeBudgetProgram.setComputeUnitPrice({
                     microLamports:1000,
@@ -207,35 +212,9 @@ export const POST = async (req) => {
             transaction.feePayer = account
             const connection = new Connection(clusterApiUrl("devnet"))
             transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash
-
-            //transaction.add(
-            //    transferInstruction2
-            //)
-
-            //const transaction=new Transaction()
-
-            // let wallet = new NodeWallet(new Keypair());
-            // const connection = new Connection(clusterApiUrl("devnet"))
-            // const provider = new AnchorProvider(connection, wallet);
-
-            // const program = new Program(
-            //     idl ,
-            //     programId,
-            //     provider
-            // );
             
-            // const amountLamports = parseFloat(1) * LAMPORTS_PER_SOL;
+            await addSubscriberToCreator(createdId, account)
 
-            // const tx =  program.transaction.sendSol(new BN(amountLamports), {
-            //     accounts: {
-            //     signer: account,
-            //     recipient: creatorWallet,
-            //     system_program: SystemProgram.programId,
-            //     },
-            // });
-            // transaction.add(tx)
-            //transaction.feePayer = account
-            //transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash
             payload = await createPostResponse({
                 fields:{
                     transaction,
@@ -304,7 +283,7 @@ export const POST = async (req) => {
                                     icon: imageUnPaid,
                                     label:"Proceed & Pay",
                                     description:"The following content can be only be accessed after successful payment.",
-                                    title:`Subscription Price : $${price}`,
+                                    title:`Subscription Price : $${subscriptionPrice}`,
                                     links:{
                                         actions:[{
                                             label:"Proceed & Pay",
