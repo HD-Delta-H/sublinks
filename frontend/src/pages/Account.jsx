@@ -11,35 +11,9 @@ import { useOkto } from "okto-sdk-react";
 const API_URL = 'https://sublinks.onrender.com';
 
 export const Account = () => {
-    const [userDetails, setUserDetails] = useState({
-        "email": "d.mahajan2004@gmail.com",
-        "user_id": "f73ae8a5-7ef7-4f9a-9cc6-c29d3da43eeb",
-        "created_at": "1728399979",
-        "freezed": false,
-        "freeze_reason": ""
-      });
-    const [wallets, setWallets] = useState({
-        "wallets": [
-          {
-            "network_name": "SOLANA_DEVNET",
-            "address": "82E74ymh9KPjaTKgHfofVywXobTaQcRYdQrYRY8pwf7V",
-            "success": true
-          }
-        ]
-      })
-    const [portfolioData, setPortfolioData] = useState({
-        "total": 1,
-        "tokens": [
-          {
-            "token_name": "SOL_DEVNET",
-            "quantity": "1.3",
-            "amount_in_inr": "0",
-            "token_image": "",
-            "token_address": "",
-            "network_name": "SOLANA_DEVNET"
-          }
-        ]
-      });
+    const [userDetails, setUserDetails] = useState();
+    const [wallets, setWallets] = useState()
+    const [portfolioData, setPortfolioData] = useState();
       const [tokensDev, settokensDev] = useState(0)
       const [tokensMain, settokensMain] = useState(0)
     const { getUserDetails, getPortfolio, createWallet, transferTokens, orderHistory } = useOkto();
@@ -56,7 +30,7 @@ export const Account = () => {
         try {
         const portfolio = await getPortfolio();
         setPortfolioData(portfolio);
-        for(let i=0;i<portfolio.total;i++){
+        for(let i=0;i<portfolio.tokens.length;i++){
             if(portfolio.tokens[i].token_name=="SOL_DEVNET")
             settokensDev(portfolio.tokens[i].quantity)
         }
