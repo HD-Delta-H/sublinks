@@ -46,20 +46,11 @@ export const Account = () => {
         }
     };
     const fetchUserDetails = async () => {
-          const details = await getUserDetails().then(()=>{
-
-            console.log(`https://sublinks.onrender.com/creator/email/${details.email}`)
-            setUserDetails(details);
-            
-          }).catch((e)=>{console.log(e)})
-    };
-   
-    useEffect(()=>{
-        fetchWallets()
-        fetchPortfolio()
-        fetchUserDetails()
-        if(userDetails){
-          axios.get(`https://sublinks.onrender.com/creator/email/${userDetails.email}`).then((data)=>{
+        try {
+        const details = await getUserDetails();
+        setUserDetails(details);
+        if(details){
+          axios.get(`https://sublinks.onrender.com/creator/email/${details.email}`).then((data)=>{
             console.log("data")
             setName(data.data.name)
             setEmail(data.data.email)
@@ -75,6 +66,15 @@ export const Account = () => {
             })
           })
         }
+        } catch (error) {
+            console.log(`Failed to fetch user details: ${error.message}`);
+        }
+    };
+    useEffect(()=>{
+        fetchUserDetails()
+        fetchWallets()
+        fetchPortfolio()
+        
     },[])
     
     const [inputDev, setInputDev] = useState()
