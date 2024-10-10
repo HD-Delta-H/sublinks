@@ -49,22 +49,22 @@ export const Account = () => {
         //try {
           const details = await getUserDetails();
           setUserDetails(details);
-          axios.get(`https://sublinks.onrender.com/creator/email/${email}`).then((data)=>{
-            console.log("data")
-            setName(data.data.name)
-            setEmail(data.data.email)
-            setWalletAddress(data.data.walletAddress)
-            setSubPrice(data.data.subscriptionPrice)
-            setSubscribers(data.data.subscribers.length)
-          }).catch(()=>{
-            console.log("s2")
-            axios.post(`https://sublinks.onrender.com/creator/create`,{
-              "name":details.email.split("@")[0],
-              "email":details.email, 
-              "walletAddress":walletAddress
+            axios.get(`https://sublinks.onrender.com/creator/email/${details.email}`).then((data)=>{
+              console.log("data")
+              setName(data.data.name)
+              setEmail(data.data.email)
+              setWalletAddress(data.data.walletAddress)
+              setSubPrice(data.data.subscriptionPrice)
+              setSubscribers(data.data.subscribers.length)
+            }).catch(()=>{
+              console.log("s2")
+              axios.post(`https://sublinks.onrender.com/creator/create`,{
+                "name":details.email.split("@")[0],
+                "email":details.email, 
+                "walletAddress":walletAddress
+              })
             })
-          })
-        //} catch (error) {
+            //} catch (error) {
 
         //    console.log(`Failed to fetch user details: ${error}`);
         //}
