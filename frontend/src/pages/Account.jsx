@@ -6,12 +6,20 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useOkto } from "okto-sdk-react";
+import { Label } from "@radix-ui/react-dropdown-menu";
 
 
 const API_URL = 'https://sublinks.onrender.com';
 
 export const Account = () => {
-    const [userDetails, setUserDetails] = useState();
+    const [userDetails, setUserDetails] = useState("");
+
+    const [name, setName] = useState()
+    const [email, setEmail] = useState()
+    const [walletAddress, setWalletAddress] = useState()
+    const [subPrice, setSubPrice] = useState()
+    const [subscribers, setSubscribers] = useState()
+
     const [wallets, setWallets] = useState()
     const [portfolioData, setPortfolioData] = useState();
       const [tokensDev, settokensDev] = useState(0)
@@ -50,6 +58,13 @@ export const Account = () => {
         fetchUserDetails()
         fetchWallets()
         fetchPortfolio()
+        axios.get("https://sublinks.onrender.com/creator/email/harshit.rai.verma@gmail.com").then((data)=>{
+          setName(data.data.name)
+          setEmail(data.data.email)
+          setWalletAddress(data.data.walletAddress)
+          setSubPrice(data.data.subscriptionPrice)
+          setSubscribers(data.data.subscribers.length)
+        })  
     },[])
     
     const [inputDev, setInputDev] = useState()
@@ -60,26 +75,83 @@ export const Account = () => {
     
     const [quantityMain, setQuantityMain] = useState()
 
+    
+
   return (
     <div className="min-h-screen h-full flex-col flex items-center bg-gray-50">
       <div className="w-full">
         <AppBar/>
       </div>
-
+      {userDetails==null?
+      <div className="w-[900px] h-60 bg-white  mt-12 flex items-center justify-center">
+        <div>Not Logged in</div>
+      </div>:
       <div className="w-full h-full px-4 sm:px-10 lg:px-10 lg:w-[900px] mt-12 mb-5 flex flex-col gap-3">
         <div className="w-full  bg-white rounded-lg  flex">
             <div className="w-1/2 text-lg flex flex-col p-4 px-9 ">
-                <div className="text-xl self-center  mb-4">
+                <div className="text-xl self-center  mb-6">
                     User Details:
                 </div>
-                <div className="">
-                    <div>Name:</div>
-                    <div>Name:</div>
-                    <div>Name:</div>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-end gap-2">
+                    <Label htmlFor="name">Name:</Label>
+                    <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value={name}
+                        onChange={(e)=>setName(e.target.value)}
+                        />
+                  </div>
+                  <div className="flex items-end gap-2">
+                    <Label htmlFor="email">Email:</Label>
+                    <Input
+                        id="email"
+                        name="email"
+                        type="text"
+                        value={email}
+                        disabled
+                        //onChange={(e)=>setEmail(e.target.value)}
+                        />
+                  </div>
+                  <div className="flex items-end gap-2">
+                    <Label htmlFor="walletAddress">Wallet:</Label>
+                    <Input
+                        id="walletAddress"
+                        name="walletAddress"
+                        type="text"
+                        value={walletAddress}
+                        disabled
+                        //onChange={(e)=>setEmail(e.target.value)}
+                        />
+                  </div>
+                  <div className="flex items-end gap-2">
+                    <Label htmlFor="subscribers">Subscribers:</Label>
+                    <Input
+                        id="subscribers"
+                        name="subscribers"
+                        type="text"
+                        value={subscribers}
+                        disabled
+                        //onChange={(e)=>setSubscribers(e.target.value)}
+                        />
+                  </div>
+                  <div className="flex items-end gap-2">
+                    <Label htmlFor="subPrice">Price:</Label>
+                    <Input
+                        id="subPrice"
+                        name="subPrice"
+                        type="text"
+                        value={subPrice}
+                        onChange={(e)=>setSubPrice(e.target.value)}
+                        />
+                  </div>
+                  <div className="mt-4 self-end">
+                  <Button>Update Details</Button>
+                  </div>
                 </div>
             </div>
-            <div className="w-0.5 h-full bg-gray-100 "></div>
-            <div className="w-1/2 text-lg  flex flex-col gap-5 items-left p-4 px-9">
+            <div className="w-1/2 text-lg  flex flex-col gap-5 items-left p-4 px-9 border-l-2 border-gray-50">
                 <div className="text-xl self-center mb-4">
                     Accounts:
                 </div>
@@ -119,31 +191,10 @@ export const Account = () => {
             </div>
             </div>
         <div>
-        <button onClick={fetchUserDetails}>View User Details</button>
-        {userDetails && (
-          <div>
-            <h2>User Details:</h2>
-            <pre>{JSON.stringify(userDetails, null, 2)}</pre>
-          </div>
-        )}
-        <button onClick={fetchWallets}>View Wallets</button>
-        {userDetails && (
-          <div>
-            <h2>User Wallets:</h2>
-            <pre>{JSON.stringify(wallets, null, 2)}</pre>
-          </div>
-        )}
-        <button onClick={fetchPortfolio}>View Portfolio</button>
-        {userDetails && (
-          <div>
-            <h2>Portfolio:</h2>
-            <pre>{JSON.stringify(portfolioData, null, 2)}</pre>
-          </div>
-        )}
-    
         </div>
      
     </div>
+}
     </div>
   );
 }

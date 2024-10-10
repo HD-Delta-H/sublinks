@@ -1,4 +1,3 @@
-import LoginPage from "./login";
 
 
 import { useOkto } from "okto-sdk-react";
@@ -41,7 +40,6 @@ function Home() {
  
   return (
     <div >
-        <LoginPage/>
         <h1>Home Page</h1>
         <button onClick={fetchUserDetails}>View User Details</button>
         {userDetails && (
