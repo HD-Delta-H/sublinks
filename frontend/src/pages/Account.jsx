@@ -48,6 +48,7 @@ export const Account = () => {
     const fetchUserDetails = async () => {
         //try {
           const details = await getUserDetails();
+          console.log(`https://sublinks.onrender.com/creator/email/${details.email}`)
           setUserDetails(details);
             axios.get(`https://sublinks.onrender.com/creator/email/${details.email}`).then((data)=>{
               console.log("data")
