@@ -50,21 +50,7 @@ export const Account = () => {
 
             console.log(`https://sublinks.onrender.com/creator/email/${details.email}`)
             setUserDetails(details);
-            axios.get(`https://sublinks.onrender.com/creator/email/${details.email}`).then((data)=>{
-              console.log("data")
-              setName(data.data.name)
-              setEmail(data.data.email)
-              setWalletAddress(data.data.walletAddress)
-              setSubPrice(data.data.subscriptionPrice)
-              setSubscribers(data.data.subscribers.length)
-            }).catch(()=>{
-              console.log("s2")
-              axios.post(`https://sublinks.onrender.com/creator/create`,{
-                "name":details.email.split("@")[0],
-                "email":details.email, 
-                "walletAddress":walletAddress
-              })
-            })
+            
           }).catch((e)=>{console.log(e)})
     };
    
@@ -72,9 +58,23 @@ export const Account = () => {
         fetchWallets()
         fetchPortfolio()
         fetchUserDetails()
-        axios.get("https://sublinks.onrender.com/creator/email/harshit.rai.verma@gmail.com").then((data)=>{
-          
-        })  
+        if(userDetails){
+          axios.get(`https://sublinks.onrender.com/creator/email/${userDetails.email}`).then((data)=>{
+            console.log("data")
+            setName(data.data.name)
+            setEmail(data.data.email)
+            setWalletAddress(data.data.walletAddress)
+            setSubPrice(data.data.subscriptionPrice)
+            setSubscribers(data.data.subscribers.length)
+          }).catch(()=>{
+            console.log("s2")
+            axios.post(`https://sublinks.onrender.com/creator/create`,{
+              "name":details.email.split("@")[0],
+              "email":details.email, 
+              "walletAddress":walletAddress
+            })
+          })
+        }
     },[])
     
     const [inputDev, setInputDev] = useState()
