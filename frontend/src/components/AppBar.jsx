@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { HiMenu } from "react-icons/hi";
+import axios from "axios";
 
 export const AppBar = () => {
   const [ walletAddress, setWalletAddress ] = useState();
@@ -46,16 +47,8 @@ export const AppBar = () => {
         setAuthToken(authResponse.auth_token);
         if (!authToken && authResponse.action === "signup") {
           console.log("User Signup");
-          const pinToken = authResponse.token;
-        //   await setPin(idToken, pinToken, "0000");
-        //   await authenticate(idToken, async (res, err) => {
-        //     if (res) {
-        //       setAuthToken(res.auth_token);
-        //     }
-        //   });
         }
         console.log("auth token received", authToken);
-        //navigate("/home");
       }
       if (error) {
         console.error("Authentication error:", error);

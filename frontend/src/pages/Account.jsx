@@ -46,24 +46,36 @@ export const Account = () => {
         }
     };
     const fetchUserDetails = async () => {
-        try {
-        const details = await getUserDetails();
-        setUserDetails(details);
-        } catch (error) {
-            console.log(`Failed to fetch user details: ${error.message}`);
-        }
+        //try {
+          const details = await getUserDetails();
+          setUserDetails(details);
+          axios.get(`https://sublinks.onrender.com/creator/email/${email}`).then((data)=>{
+            console.log("data")
+            setName(data.data.name)
+            setEmail(data.data.email)
+            setWalletAddress(data.data.walletAddress)
+            setSubPrice(data.data.subscriptionPrice)
+            setSubscribers(data.data.subscribers.length)
+          }).catch(()=>{
+            console.log("s2")
+            axios.post(`https://sublinks.onrender.com/creator/create`,{
+              "name":details.email.split("@")[0],
+              "email":details.email, 
+              "walletAddress":walletAddress
+            })
+          })
+        //} catch (error) {
+
+        //    console.log(`Failed to fetch user details: ${error}`);
+        //}
     };
    
     useEffect(()=>{
-        fetchUserDetails()
         fetchWallets()
         fetchPortfolio()
+        fetchUserDetails()
         axios.get("https://sublinks.onrender.com/creator/email/harshit.rai.verma@gmail.com").then((data)=>{
-          setName(data.data.name)
-          setEmail(data.data.email)
-          setWalletAddress(data.data.walletAddress)
-          setSubPrice(data.data.subscriptionPrice)
-          setSubscribers(data.data.subscribers.length)
+          
         })  
     },[])
     
@@ -78,16 +90,16 @@ export const Account = () => {
     
 
   return (
-    <div className="min-h-screen h-full flex-col flex items-center bg-gray-50">
+    <div className="min-h-screen h-full flex-col flex items-center bg-gray-50 w-full">
       <div className="w-full">
         <AppBar/>
       </div>
       {userDetails==null?
-      <div className="w-[900px] h-60 bg-white  mt-12 flex items-center justify-center">
+      <div className=" w-full  h-60 bg-white  mt-12 flex  items-center justify-center">
         <div>Not Logged in</div>
       </div>:
       <div className="w-full h-full px-4 sm:px-10 lg:px-10 lg:w-[900px] mt-12 mb-5 flex flex-col gap-3">
-        <div className="w-full  bg-white rounded-lg  flex">
+        <div className="w-full  bg-white rounded-lg  flex flex-col sm:flex-row items-center">
             <div className="w-1/2 text-lg flex flex-col p-4 px-9 ">
                 <div className="text-xl self-center  mb-6">
                     User Details:
