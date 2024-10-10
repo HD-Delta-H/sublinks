@@ -46,10 +46,10 @@ export const Account = () => {
         }
     };
     const fetchUserDetails = async () => {
-        //try {
-          const details = await getUserDetails();
-          console.log(`https://sublinks.onrender.com/creator/email/${details.email}`)
-          setUserDetails(details);
+          const details = await getUserDetails().then(()=>{
+
+            console.log(`https://sublinks.onrender.com/creator/email/${details.email}`)
+            setUserDetails(details);
             axios.get(`https://sublinks.onrender.com/creator/email/${details.email}`).then((data)=>{
               console.log("data")
               setName(data.data.name)
@@ -65,10 +65,7 @@ export const Account = () => {
                 "walletAddress":walletAddress
               })
             })
-            //} catch (error) {
-
-        //    console.log(`Failed to fetch user details: ${error}`);
-        //}
+          }).catch((e)=>{console.log(e)})
     };
    
     useEffect(()=>{
