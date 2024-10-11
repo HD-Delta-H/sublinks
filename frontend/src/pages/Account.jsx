@@ -65,6 +65,7 @@ export const Account = () => {
         fetchPortfolio()
         axios.get(`https://sublinks.onrender.com/creator/email/${localStorage.getItem("email")}`).then((data)=>{
           console.log("data")
+          localStorage.setItem('id',data.data._id);
           setName(data.data.name)
           setEmail(data.data.email)
           setWalletAddress(data.data.walletAddress)
@@ -76,6 +77,15 @@ export const Account = () => {
             "name":localStorage.getItem("email").split("@")[0],
             "email":localStorage.getItem("email"), 
             "walletAddress":localStorage.getItem("walletAddress")
+          })
+          axios.get(`https://sublinks.onrender.com/creator/email/${localStorage.getItem("email")}`).then((data)=>{
+            console.log("data")
+            localStorage.setItem('id',data.data._id);
+            setName(data.data.name)
+            setEmail(data.data.email)
+            setWalletAddress(data.data.walletAddress)
+            setSubPrice(data.data.subscriptionPrice)
+            setSubscribers(data.data.subscribers.length)
           })
         })
     },[])
@@ -160,7 +170,12 @@ export const Account = () => {
                         />
                   </div>
                   <div className="mt-4 self-end">
-                  <Button>Update Details</Button>
+                  <Button onClick={()=>{
+                    axios.post(`https://sublinks.onrender.com/creator/${localStorage.getItem("id")}`,{
+                      name: "d.mahajan2004",
+                      subscriptionPrice: 0,
+                    })
+                  }} >Update Details</Button>
                   </div>
                 </div>
             </div>
@@ -211,3 +226,5 @@ export const Account = () => {
     </div>
   );
 }
+
+
