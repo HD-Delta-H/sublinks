@@ -172,8 +172,8 @@ export const Account = () => {
                   <div className="mt-4 self-end">
                   <Button onClick={()=>{
                     axios.put(`https://sublinks.onrender.com/creator/${localStorage.getItem("id")}`,{
-                      name: "d.mahajan2004",
-                      subscriptionPrice: 0,
+                      name: name,
+                      subscriptionPrice: subPrice,
                     })
                   }} >Update Details</Button>
                   </div>
