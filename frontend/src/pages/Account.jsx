@@ -29,6 +29,9 @@ export const Account = () => {
         try {
         const walletsData = await createWallet();
         setWallets(walletsData);
+        if(walletsData){
+          localStorage.setItem('walletAddress',walletsData.wallets[0].address);
+        }
         } catch (error) {
         console.log(`Failed to fetch wallets: ${error.message}`);
         }
@@ -50,21 +53,7 @@ export const Account = () => {
         const details = await getUserDetails();
         setUserDetails(details);
         if(details){
-          axios.get(`https://sublinks.onrender.com/creator/email/${details.email}`).then((data)=>{
-            console.log("data")
-            setName(data.data.name)
-            setEmail(data.data.email)
-            setWalletAddress(data.data.walletAddress)
-            setSubPrice(data.data.subscriptionPrice)
-            setSubscribers(data.data.subscribers.length)
-          }).catch(()=>{
-            console.log("s2")
-            axios.post(`https://sublinks.onrender.com/creator/create`,{
-              "name":details.email.split("@")[0],
-              "email":details.email, 
-              "walletAddress":walletAddress
-            })
-          })
+            localStorage.setItem('email',details.email);
         }
         } catch (error) {
             console.log(`Failed to fetch user details: ${error.message}`);
@@ -74,7 +63,21 @@ export const Account = () => {
         fetchUserDetails()
         fetchWallets()
         fetchPortfolio()
-        
+        axios.get(`https://sublinks.onrender.com/creator/email/${localStorage.getItem("email")}`).then((data)=>{
+          console.log("data")
+          setName(data.data.name)
+          setEmail(data.data.email)
+          setWalletAddress(data.data.walletAddress)
+          setSubPrice(data.data.subscriptionPrice)
+          setSubscribers(data.data.subscribers.length)
+        }).catch(()=>{
+          console.log("s2")
+          axios.post(`https://sublinks.onrender.com/creator/create`,{
+            "name":localStorage.getItem("email").split("@")[0],
+            "email":localStorage.getItem("email"), 
+            "walletAddress":localStorage.getItem("walletAddress")
+          })
+        })
     },[])
     
     const [inputDev, setInputDev] = useState()

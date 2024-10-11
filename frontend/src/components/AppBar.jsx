@@ -26,6 +26,7 @@ export const AppBar = () => {
         const walletsData = await createWallet();
         setWalletAddress(walletsData.wallets[0].address);
         localStorage.setItem('walletAddress',walletsData.wallets[0].address);
+        
         } catch (error) {
         console.log(`Failed to fetch wallets: ${error.message}`);
         }
