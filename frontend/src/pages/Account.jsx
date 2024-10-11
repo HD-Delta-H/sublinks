@@ -39,6 +39,7 @@ export const Account = () => {
     const fetchPortfolio = async () => {
         try {
         const portfolio = await getPortfolio();
+        console.log(portfolio)
         setPortfolioData(portfolio);
         for(let i=0;i<portfolio.tokens.length;i++){
             if(portfolio.tokens[i].token_name=="SOL_DEVNET")
