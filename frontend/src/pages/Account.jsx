@@ -73,7 +73,7 @@ export const Account = () => {
           setSubscribers(data.data.subscribers.length)
         }).catch(()=>{
           console.log("s2")
-          axios.post(`https://sublinks.onrender.com/creator/create`,{
+          axios.put(`https://sublinks.onrender.com/creator/create`,{
             "name":localStorage.getItem("email").split("@")[0],
             "email":localStorage.getItem("email"), 
             "walletAddress":localStorage.getItem("walletAddress")
