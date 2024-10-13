@@ -24,10 +24,10 @@ export default function Form() {
   let subsciptionPrice = 100;
 
   const [formValues, setFormValues] = useState({
-    unpaidTitle: 'Preview Title',
-    paidTitle: 'Paid Title',
-    unpaidContent: 'Unpaid Content',
-    paidContent: 'Paid Content',
+    unpaidTitle: '',
+    paidTitle: '',
+    unpaidContent: '',
+    paidContent: '',
     price: 0.0,
     payPerView: subType === 'ppv',
     unpaidImage: null,
