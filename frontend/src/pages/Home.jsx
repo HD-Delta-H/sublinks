@@ -39,15 +39,15 @@ export const Home = () => {
         <div className="flex gap-4 mb-5">
           <div className="bg-white flex flex-col gap-1 border-gray-200 border  w-full rounded-lg px-5 p-3">
             <h1 className="text-lg font-semibold text-gray-400">Total Revenue</h1>
-            <p className="text-4xl font-bold text-gray-600">$400</p>
+            <p className="text-4xl font-bold text-gray-600">$312</p>
           </div>
           <div className="bg-white flex flex-col gap-1 border-gray-200 border  w-full rounded-lg px-5 p-3">
             <h1 className="text-lg font-semibold text-gray-400">Avg Engagement</h1>
-            <p className="text-4xl font-bold text-gray-600">400</p>
+            <p className="text-4xl font-bold text-gray-600">21</p>
           </div>
           <div className="bg-white flex flex-col gap-1 border-gray-200 border  w-full rounded-lg px-5 p-3">
             <h1 className="text-lg font-semibold text-gray-400">No. of Subscribers</h1>
-            <p className="text-4xl font-bold text-gray-600">400</p>
+            <p className="text-4xl font-bold text-gray-600">57</p>
           </div>
         </div>
 
