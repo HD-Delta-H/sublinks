@@ -12,7 +12,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 const API_URL = 'https://sublinks.onrender.com';
 
 export const Account = () => {
-    const [userDetails, setUserDetails] = useState("");
+    const [userDetails, setUserDetails] = useState();
 
     const [name, setName] = useState()
     const [email, setEmail] = useState()
@@ -195,19 +195,19 @@ export const Account = () => {
                     <div className="flex justify-between">
                     <span>SOLANA DEV NET</span>
                     <span>
-                    {tokensMain} SOL
+                    {tokensDev} SOL
                         </span>
                     </div>
-                    <input className="border w-full my-2 px-2 py-1 rounded-lg" type="text" placeholder="Enter Address to Send Tokens to..." value={inputMain}  onChange={(e)=>{setInputMain(e.target.value)}}></input>
+                    <input className="border w-full my-2 px-2 py-1 rounded-lg" type="text" placeholder="Enter Address to Send Tokens to..." value={inputDev}  onChange={(e)=>{setInputDev(e.target.value)}}></input>
                     <div className="flex justify-between">
-                    <input className="border w-1/2 my-2 px-2 py-1 rounded-lg" type="number" min={0} max={tokensMain} placeholder="Enter Quantity..." value={quantityMain}  onChange={(e)=>{setQuantityMain(e.target.value)}}></input>
+                    <input className="border w-1/2 my-2 px-2 py-1 rounded-lg" type="number" min={0} max={tokensDev} placeholder="Enter Quantity..." value={quantityDev}  onChange={(e)=>{setQuantityDev(e.target.value)}}></input>
                     <button className="bg-black px-5 rounded-lg text-white h-10 mt-2" onClick={()=>{
                         transferTokens({
                             network_name:"SOLANA_DEVNET",
                             token_address:"",
                             recipient_address:inputDev,
                             quantity:quantityDev
-                        })
+                        }).then((e)=>console.log(e)).catch((e)=>console.log(e))
                     }}>Send</button>
                     </div>
                 </div>
@@ -218,9 +218,9 @@ export const Account = () => {
                     {tokensMain} SOL
                         </span>
                     </div>
-                    <input className="border w-full my-2 px-2 py-1 rounded-lg" type="text" placeholder="Enter Address to Send Tokens to..." value={inputDev}  onChange={(e)=>{setInputDev(e.target.value)}}></input>
+                    <input className="border w-full my-2 px-2 py-1 rounded-lg" type="text" placeholder="Enter Address to Send Tokens to..." value={inputMain}  onChange={(e)=>{setInputMain(e.target.value)}}></input>
                     <div className="flex justify-between">
-                    <input className="border w-1/2 my-2 px-2 py-1 rounded-lg" type="number" min={0} max={tokensDev} placeholder="Enter Quantity..." value={quantityDev}  onChange={(e)=>{setQuantityDev(e.target.value)}}></input>
+                    <input className="border w-1/2 my-2 px-2 py-1 rounded-lg" type="number" min={0} max={tokensMain} placeholder="Enter Quantity..." value={quantityMain}  onChange={(e)=>{setQuantityMain(e.target.value)}}></input>
                     <button className="bg-black px-5 rounded-lg text-white h-10 mt-2">Send</button>
                     </div>
                 </div>
