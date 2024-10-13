@@ -42,8 +42,11 @@ export const Account = () => {
         console.log(portfolio)
         setPortfolioData(portfolio);
         for(let i=0;i<portfolio.tokens.length;i++){
-            if(portfolio.tokens[i].token_name=="SOL_DEVNET")
-            settokensDev(portfolio.tokens[i].quantity)
+            if(portfolio.tokens[i].network_name=="SOLANA_DEVNET")
+              localStorage.setItem('devTokens',portfolio.tokens[i].quantity);
+            else if(portfolio.tokens[i].network_name=="SOLANA_MAINNET")
+              localStorage.setItem('mainTokens',portfolio.tokens[i].quantity);
+            //settokensDev(portfolio.tokens[i].quantity)
         }
         } catch (error) {
         console.log(`Failed to fetch portfolio: ${error.message}`);
@@ -64,6 +67,10 @@ export const Account = () => {
         fetchUserDetails()
         fetchWallets()
         fetchPortfolio()
+        if(localStorage.getItem('devTokens'))
+          settokensDev(localStorage.getItem('devTokens'))
+      if(localStorage.getItem('mainTokens'))
+        settokensMain(localStorage.getItem('mainTokens'))
         axios.get(`https://sublinks.onrender.com/creator/email/${localStorage.getItem("email")}`).then((data)=>{
           console.log("data")
           localStorage.setItem('id',data.data._id);
