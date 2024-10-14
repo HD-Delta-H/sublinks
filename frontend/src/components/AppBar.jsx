@@ -15,12 +15,12 @@ import { HiMenu } from "react-icons/hi";
 import axios from "axios";
 
 export const AppBar = () => {
+  const [ walletAddress, setWalletAddress ] = useState();
   const [ userData, setUserData ] = useState(null);
   const navigate = useNavigate();
-  //const { getUserDetails,createWallet } = useOkto();
+  const { getUserDetails,createWallet } = useOkto();
+  const { authenticate,authenticateWithUserId,getWallets } = useOkto();
   const [authToken, setAuthToken] = useState();
-  const { authenticate,createWallet } = useOkto();
-  const [ walletAddress, setWalletAddress ] = useState();
     const fetchWallets = async () => {
         try {
         const walletsData = await createWallet();
@@ -31,11 +31,12 @@ export const AppBar = () => {
         console.log(`Failed to fetch wallets: ${error.message}`);
         }
     };
+
+
+  useEffect(() => {
     
-    useEffect(() => {
-      //fetchUserDetails()
-      fetchWallets();
-    });
+    fetchWallets();
+  });
 
   const handleGoogleLogin = async (credentialResponse) => {
     console.log("Google login response:", credentialResponse);

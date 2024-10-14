@@ -24,7 +24,7 @@ export const Account = () => {
     const [portfolioData, setPortfolioData] = useState();
       const [tokensDev, settokensDev] = useState(0)
       const [tokensMain, settokensMain] = useState(0)
-    const { getUserDetails, getPortfolio, createWallet, transferTokens, orderHistory } = useOkto();
+    const { getUserDetails, getPortfolio, createWallet, transferTokens,transferTokensWithJobStatus, orderHistory } = useOkto();
     const fetchWallets = async () => {
         try {
         const walletsData = await createWallet();
@@ -202,7 +202,7 @@ export const Account = () => {
                     <div className="flex justify-between">
                     <input className="border w-1/2 my-2 px-2 py-1 rounded-lg" type="number" min={0} max={tokensDev} placeholder="Enter Quantity..." value={quantityDev}  onChange={(e)=>{setQuantityDev(e.target.value)}}></input>
                     <button className="bg-black px-5 rounded-lg text-white h-10 mt-2" onClick={()=>{
-                        transferTokens({
+                        transferTokensWithJobStatus({
                             network_name:"SOLANA_DEVNET",
                             token_address:"",
                             recipient_address:inputDev,
