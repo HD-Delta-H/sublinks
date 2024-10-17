@@ -17,7 +17,7 @@ export interface SubscriberDoc{
 
 const subscriberSchema: Schema = new Schema(
   {
-    walletAddress: { type: String, required: true, unique: true },
+    walletAddress: { type: String },
     date: { type: Date, default: Date.now },
   },
   { timestamps: true }
