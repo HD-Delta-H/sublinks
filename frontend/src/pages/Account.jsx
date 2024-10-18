@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useOkto } from "okto-sdk-react";
 import { Label } from "@radix-ui/react-dropdown-menu";
+import duck from "/duck.png"
 
 
 const API_URL = 'https://sublinks.onrender.com';
@@ -114,8 +115,10 @@ export const Account = () => {
         <AppBar/>
       </div>
       {userDetails==null?
-      <div className=" w-full  h-60 bg-white  mt-12 flex  items-center justify-center">
-        <div>Not Logged in</div>
+      <div className=" w-full py-16 bg-white  mt-12 flex flex-col items-center justify-center">
+        <img src={duck} width={270}></img>
+        <div className="text-xl">Not Logged in</div>
+        <div className="text-gray-400 w-2/3 text-center">If you're having trouble logging in, please try again. High server traffic can sometimes cause delays, but a second or third attempt should do the trick!</div>
       </div>:
       <div className="w-full h-full px-4 sm:px-10 lg:px-10 lg:w-[900px] mt-12 mb-5 flex flex-col gap-3">
         <div className="w-full  bg-white rounded-lg  flex flex-col sm:flex-row items-center">

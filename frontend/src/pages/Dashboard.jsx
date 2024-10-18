@@ -15,7 +15,8 @@ export const Dashboard = () => {
   const fetchBlinks = async () => {
     try {
       // TODO: Fetch blinks from the API
-      const response = await axios.get(`${API_URL}/blinks/all`);
+      //const response = await axios.get(`${API_URL}/blinks/all`);
+      const response = await axios.get(`${API_URL}/blinks/creator/${localStorage.getItem("id")}`);
       const data = response.data;
       console.log('Blinks:', data);
       setBlinks(data);

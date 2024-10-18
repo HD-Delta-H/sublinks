@@ -55,6 +55,7 @@ export const AppBar = () => {
         console.error("Authentication error:", error);
       }
     });
+    navigate("/account")
   };
 
 
@@ -78,6 +79,7 @@ export const AppBar = () => {
             
             <div className="flex h-full  ml-10 items-center justify-center">
               <NavBarItem pathname={location.pathname} link="/home" title="Explore" />
+              <NavBarItem pathname={location.pathname} link="/dashboard" title="Dashboard" />
               <NavBarItem pathname={location.pathname} link="/create" title="Create Blink" />
               <NavBarItem pathname={location.pathname} link="/account" title="Profile" />
             </div>
