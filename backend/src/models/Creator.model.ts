@@ -16,7 +16,7 @@ export interface SubscriberDoc{
 }
 const subscriberSchema: Schema = new Schema(
   {
-    walletAddress: { type: String },
+    walletAddress: { type: String,  },
     date: { type: Date, default: Date.now },
   },
   { timestamps: true }
@@ -25,7 +25,7 @@ const subscriberSchema: Schema = new Schema(
 // Add partial index for walletAddress to ensure uniqueness only for non-null values
 subscriberSchema.index(
   { walletAddress: 1 },
-  { unique: true, partialFilterExpression: { walletAddress: { $type: 'string' } } }
+  { partialFilterExpression: { walletAddress: { $type: 'string' } } } // Without unique: true
 );
 
 const creatorSchema: Schema = new Schema(
