@@ -79,7 +79,7 @@ export default function Form() {
         premiumContent : formValues.paidContent,
         type: subType,
         price: formValues.price,
-        creator: localStorage.getItem("walletAddress"),
+        creator: localStorage.getItem("id"),
       });
   
       // Handle success response
