@@ -30,6 +30,7 @@ export const Account = () => {
         try {
         const walletsData = await createWallet();
         setWallets(walletsData);
+        console.log("Wallet Details",walletsData)
         if(walletsData){
           localStorage.setItem('walletAddress',walletsData.wallets[0].address);
         }

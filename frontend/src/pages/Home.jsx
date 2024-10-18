@@ -36,24 +36,11 @@ export const Home = () => {
       </div>
 
       <div className="w-full h-full px-4 sm:px-10 lg:px-10 lg:w-[900px] mt-12 mb-5 flex flex-col gap-3">
-        <div className="flex gap-4 mb-5">
-          <div className="bg-white flex flex-col gap-1 border-gray-200 border  w-full rounded-lg px-5 p-3">
-            <h1 className="text-lg font-semibold text-gray-400">Total Revenue</h1>
-            <p className="text-4xl font-bold text-gray-600">$312</p>
-          </div>
-          <div className="bg-white flex flex-col gap-1 border-gray-200 border  w-full rounded-lg px-5 p-3">
-            <h1 className="text-lg font-semibold text-gray-400">Avg Engagement</h1>
-            <p className="text-4xl font-bold text-gray-600">21</p>
-          </div>
-          <div className="bg-white flex flex-col gap-1 border-gray-200 border  w-full rounded-lg px-5 p-3">
-            <h1 className="text-lg font-semibold text-gray-400">No. of Subscribers</h1>
-            <p className="text-4xl font-bold text-gray-600">57</p>
-          </div>
-        </div>
+  
 
         <div className="flex justify-between mb-2">
-          <h2 className="text-2xl font-bold">Your Sublinks</h2>
-          <Button className="px-8">Create</Button>
+          <h2 className="text-2xl font-bold">Explore Sublinks</h2>
+          <Button onClick={()=>{window.open("https://x.com/sublinks_","_blank")}} className="px-8">Check out on our Twitter</Button>
         </div>
         {/* <p className="text-[14px]">Here are the latest blinks from the community.</p> */}
         <div className="grid sm:grid-cols-2 gap-10">
