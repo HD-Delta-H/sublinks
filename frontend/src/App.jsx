@@ -8,6 +8,7 @@ import { Home } from './pages/Home';
 import { Toaster } from "react-hot-toast";
 import { Account } from './pages/Account';
 import Demo from './demo';
+import { Dashboard } from './pages/Dashboard';
 
 const OKTO_CLIENT_API_KEY = import.meta.env.VITE_OKTO_CLIENT_API_KEY;
 export const API_URL = 'https://sublinks.onrender.com';
@@ -20,6 +21,7 @@ function App() {
       <Routes >
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create" element={<Form />} />
         <Route path="/form" element={<CreateBlink />} />
         <Route path="/account" element={<Account />} />
