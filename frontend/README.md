@@ -1,8 +1,10 @@
-# React + Vite
+# Code Guide.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Code Tour
+Link: "To be added soon"
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Self Running/Hosting
+- Clone the Frontend (this) folder
+- Set up the enviroment variables as per .env.sample file
+- Run "npm run dev" to test locally or Plublish on Vercel.
+- Please ensure to setup Google Client Auth 2.0 api properly and allow the hosted website access to the website.
