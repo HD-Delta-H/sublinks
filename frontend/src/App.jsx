@@ -7,6 +7,8 @@ import CreateBlink from './pages/CreateBlink'
 import { Home } from './pages/Home';
 import { Toaster } from "react-hot-toast";
 import { Account } from './pages/Account';
+import LandingPage from './pages/LandingPage';
+import LandingPage2 from './pages/LandingPage2';
 import Demo from './demo';
 import { Dashboard } from './pages/Dashboard';
 
@@ -20,6 +22,8 @@ function App() {
       <OktoProvider apiKey={OKTO_CLIENT_API_KEY} buildType={BuildType.SANDBOX}>
       <Routes >
         <Route path="/" element={<Home />} />
+        <Route path="/landing" element={<LandingPage />} />
+        <Route path="/landing2" element={<LandingPage2 />} />
         <Route path="/home" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create" element={<Form />} />

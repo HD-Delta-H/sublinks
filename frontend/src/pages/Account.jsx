@@ -2,15 +2,13 @@ import { AppBar } from "@/components/AppBar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useOkto } from "okto-sdk-react";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import duck from "/duck.png"
-
-
-const API_URL = 'https://sublinks.onrender.com';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { BiRefresh } from "react-icons/bi";
 
 export const Account = () => {
     const [userDetails, setUserDetails] = useState();
@@ -23,55 +21,64 @@ export const Account = () => {
 
     const [wallets, setWallets] = useState()
     const [portfolioData, setPortfolioData] = useState();
-      const [tokensDev, settokensDev] = useState(0)
-      const [tokensMain, settokensMain] = useState(0)
-    const { getUserDetails, getPortfolio, createWallet, transferTokens,transferTokensWithJobStatus, orderHistory } = useOkto();
+    const [tokensDev, settokensDev] = useState(0)
+    const [tokensMain, settokensMain] = useState(0)
+    const { getUserDetails, getPortfolio, createWallet, transferTokens, transferTokensWithJobStatus, orderHistory } = useOkto();
+    
     const fetchWallets = async () => {
         try {
-        const walletsData = await createWallet();
-        setWallets(walletsData);
-        if(walletsData){
-          localStorage.setItem('walletAddress',walletsData.wallets[0].address);
-        }
+            const walletsData = await createWallet();
+            setWallets(walletsData);
+            
+            if (walletsData) {
+                localStorage.setItem('walletAddress',walletsData.wallets[0].address);
+            }
         } catch (error) {
-        console.log(`Failed to fetch wallets: ${error.message}`);
+            console.log(`Failed to fetch wallets: ${error.message}`);
         }
     };
+
     const fetchPortfolio = async () => {
         try {
-        const portfolio = await getPortfolio();
-        console.log(portfolio)
-        setPortfolioData(portfolio);
-        for(let i=0;i<portfolio.tokens.length;i++){
-            if(portfolio.tokens[i].network_name=="SOLANA_DEVNET")
-              localStorage.setItem('devTokens',portfolio.tokens[i].quantity);
-            else if(portfolio.tokens[i].network_name=="SOLANA_MAINNET")
-              localStorage.setItem('mainTokens',portfolio.tokens[i].quantity);
-            //settokensDev(portfolio.tokens[i].quantity)
-        }
+            const portfolio = await getPortfolio();
+            console.log(portfolio)
+            setPortfolioData(portfolio);
+            
+            for( let i=0; i<portfolio.tokens.length; i++) {
+                if (portfolio.tokens[i].network_name=="SOLANA_DEVNET")
+                    localStorage.setItem('devTokens',portfolio.tokens[i].quantity);
+                else if (portfolio.tokens[i].network_name=="SOLANA_MAINNET")
+                    localStorage.setItem('mainTokens',portfolio.tokens[i].quantity);
+            }
         } catch (error) {
-        console.log(`Failed to fetch portfolio: ${error.message}`);
+            console.log(`Failed to fetch portfolio: ${error.message}`);
         }
     };
+
     const fetchUserDetails = async () => {
         try {
-        const details = await getUserDetails();
-        setUserDetails(details);
-        if(details){
-            localStorage.setItem('email',details.email);
-        }
+            const details = await getUserDetails();
+            setUserDetails(details);
+            if (details) {
+                localStorage.setItem('email',details.email);
+            }
         } catch (error) {
             console.log(`Failed to fetch user details: ${error.message}`);
         }
     };
-    useEffect(()=>{
+
+    useEffect(() => {
         fetchUserDetails()
         fetchWallets()
         fetchPortfolio()
-        if(localStorage.getItem('devTokens'))
-          settokensDev(localStorage.getItem('devTokens'))
-      if(localStorage.getItem('mainTokens'))
-        settokensMain(localStorage.getItem('mainTokens'))
+
+        if (localStorage.getItem('devTokens'))
+            settokensDev(localStorage.getItem('devTokens'))
+
+        if (localStorage.getItem('mainTokens'))
+            settokensMain(localStorage.getItem('mainTokens'))
+
+
         axios.get(`https://sublinks.onrender.com/creator/email/${localStorage.getItem("email")}`).then((data)=>{
           console.log("data")
           localStorage.setItem('id',data.data._id);
@@ -82,14 +89,16 @@ export const Account = () => {
           setSubscribers(data.data.subscribers.length)
         }).catch(()=>{
           console.log("s2")
+          
           axios.post(`https://sublinks.onrender.com/creator/create`,{
             "name":localStorage.getItem("email").split("@")[0],
             "email":localStorage.getItem("email"), 
             "walletAddress":localStorage.getItem("walletAddress")
           })
+          
           axios.get(`https://sublinks.onrender.com/creator/email/${localStorage.getItem("email")}`).then((data)=>{
             console.log("data")
-            localStorage.setItem('id',data.data._id);
+            localStorage.setItem('id', data.data._id);
             setName(data.data.name)
             setEmail(data.data.email)
             setWalletAddress(data.data.walletAddress)
@@ -237,5 +246,3 @@ export const Account = () => {
     </div>
   );
 }
-
-
