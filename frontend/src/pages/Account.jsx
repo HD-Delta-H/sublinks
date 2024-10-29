@@ -27,12 +27,12 @@ export const Account = () => {
     
     const fetchWallets = async () => {
         try {
-            const walletsData = await createWallet();
-            setWallets(walletsData);
-            
-            if (walletsData) {
-                localStorage.setItem('walletAddress',walletsData.wallets[0].address);
-            }
+        const walletsData = await createWallet();
+        setWallets(walletsData);
+        console.log("Wallet Details",walletsData)
+        if(walletsData){
+          localStorage.setItem('walletAddress',walletsData.wallets[0].address);
+        }
         } catch (error) {
             console.log(`Failed to fetch wallets: ${error.message}`);
         }
