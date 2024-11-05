@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ["class"],
@@ -13,7 +14,10 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
-				primaryColor : '#FF6363',
+				primaryColor : '#645986',
+				// primaryColor : '#F3814B',
+				accentColor : '#81EBE4',
+				// primaryColor : '#FF6363',
 			}
   	}
   },
