@@ -6,8 +6,13 @@ import Narnia from '../assets/narnia.png';
 import Space from '../assets/space.png';
 import Hero from '../assets/hero.png';
 import Tata from '../assets/Tata.png';
+
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useOkto } from "okto-sdk-react";
+import { GoogleLogin } from "@react-oauth/google";
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 export const products = [
   {
@@ -115,15 +120,72 @@ const webContent = {
 }
 
 const LandingPage = () => {
+  const { authenticate,authenticateWithUserId,getWallets } = useOkto();
+  const navigate = useNavigate();
+  const [ walletAddress, setWalletAddress ] = useState();
+  const { getUserDetails,createWallet } = useOkto();
+  //const [authToken, setAuthToken] = useState();
+    const fetchWallets = async () => {
+        try {
+        const walletsData = await createWallet();
+        setWalletAddress(walletsData.wallets[0].address);
+        localStorage.setItem('walletAddress',walletsData.wallets[0].address);
+        
+        } catch (error) {
+        console.log(`Failed to fetch wallets: ${error.message}`);
+        }
+    };
+
+
+  useEffect(() => {
+    
+    fetchWallets();
+  });
+  const handleGoogleLogin = async (credentialResponse) => {
+    console.log("Google login response:", credentialResponse);
+    const idToken = credentialResponse.credential;
+    console.log("google idtoken: ", idToken);
+    authenticate(idToken, async (authResponse, error) => {
+      if (authResponse) {
+        console.log("Authentication check: ", authResponse);
+        //setAuthToken(authResponse.auth_token);
+        if (authResponse.action === "signup") {
+          console.log("User Signup");
+        }
+        console.log("auth token received", authToken);
+      }
+      if (error) {
+        console.error("Authentication error:", error);
+      }
+    });
+    navigate("/")
+  };
+
   return (
     <div className='flex flex-col w-full'>
 
       <div className="w-full h-full bg-[#0F1017] pb-10 flex flex-col items-center text-white">
         <div className='h-20 text-white flex justify-between w-full items-center px-4 sm:px-10'>
           <h3 className='text-xl font-bold'>Sublinks</h3>
-          <Button className="bg-[#161B22] py-2 hover:bg-[#161B22]/90 text-sm font-normal px-4">
+          {/* <Button className="bg-[#161B22] py-2 hover:bg-[#161B22]/90 text-sm font-normal px-4">
             See Examples
-          </Button>
+          </Button> */}
+          { walletAddress == null 
+                ? <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                onError={(error) => {
+                  console.log("Login Failed", error);
+                }}
+                promptMomentNotification={(notification) =>
+                  console.log("Prompt moment notification:", notification)
+                }
+              />
+                : <Button 
+                onClick={()=>{navigate("/")}}
+                variant={'outline'} size={'appBar'} className="px-4 py-1 bg-primaryGreen/10 border-primaryGreen/50 border-2 rounded-full">
+                Dashboard
+                </Button>
+              }
         </div>
         <div className='flex flex-col gap-8 max-w-[900px] mt-10 px-4'>
           <h1 className="text-4xl sm:text-7xl font-black  leading-none gap-y-10 ">
@@ -142,9 +204,26 @@ const LandingPage = () => {
 
             <p className='text-gray-400 hidden sm:flex'>or</p>
 
-            <Button className="bg-white h-12 sm:h-14 font-bold text-black hover:bg-white/70 text-lg px-10" >
+            {/* <Button className="bg-white h-12 sm:h-14 font-bold text-black hover:bg-white/70 text-lg px-10" >
               Get Started
-            </Button>
+            </Button> */}
+            { walletAddress == null 
+                ? <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                onError={(error) => {
+                  console.log("Login Failed", error);
+                }}
+                promptMomentNotification={(notification) =>
+                  console.log("Prompt moment notification:", notification)
+                }
+              />
+                : <Button 
+                onClick={()=>{navigate("/")}}
+                variant={'outline'} size={'appBar'} className="px-4 py-1 bg-primaryGreen/10 border-primaryGreen/50 border-2 rounded-full">
+                Dashboard
+                </Button>
+              }
+            
           </div>
         </div>
 
