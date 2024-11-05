@@ -217,12 +217,12 @@ const LandingPage = () => {
                   console.log("Prompt moment notification:", notification)
                 }
               />
-                : <Button 
-                onClick={()=>{navigate("/")}}
-                variant={'outline'} size={'appBar'} className="px-4 py-1 bg-primaryGreen/10 border-primaryGreen/50 border-2 rounded-full">
+                : 
+                <Button onClick={()=>{navigate("/")}} className="bg-[#161B22] h-14 hidden sm:flex hover:bg-[#161B22]/90 text-md font-normal px-4">
                 Dashboard
-                </Button>
+            </Button>
               }
+                
             
           </div>
         </div>
