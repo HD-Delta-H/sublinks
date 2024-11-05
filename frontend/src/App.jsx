@@ -3,12 +3,10 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import { OktoProvider, BuildType } from 'okto-sdk-react';
 import Home2 from './home'
 import Form from './form'
-import CreateBlink from './pages/CreateBlink'
 import { Home } from './pages/Home';
 import { Toaster } from "react-hot-toast";
 import { Account } from './pages/Account';
 import LandingPage from './pages/LandingPage';
-import LandingPage2 from './pages/LandingPage2';
 import Demo from './demo';
 import { Dashboard } from './pages/Dashboard';
 
@@ -26,7 +24,6 @@ function App() {
         <Route path="/home" element={<LandingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create" element={<Form />} />
-        <Route path="/form" element={<CreateBlink />} />
         <Route path="/account" element={<Account />} />
         <Route path="/demo" element={<Demo />} />
       </Routes>
