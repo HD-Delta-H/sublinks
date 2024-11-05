@@ -127,7 +127,7 @@ export const Account = () => {
       </div>
     
     {
-        userDetails === null
+        userDetails == null
         ? (
           <div className=" w-full py-16  mt-12 flex flex-col items-center justify-center">
             <img src={duck} width={270}></img>
