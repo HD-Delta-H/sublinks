@@ -6,7 +6,7 @@ import Narnia from '../assets/narnia.png';
 import Space from '../assets/space.png';
 import Hero from '../assets/hero.png';
 import Tata from '../assets/Tata.png';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const products = [
