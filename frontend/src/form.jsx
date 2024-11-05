@@ -18,7 +18,8 @@ export default function Form() {
   const [subType, setSubType] = useState('ppv');
   const [ finalPID, setFinalPID ] = useState(null);
 
-  const [ file, setFile ] = useState(null);
+  const [ premiumFile, setPremiumFile ] = useState(null);
+  const [ previewFile, setPreviewFile ] = useState(null); 
 
   let subsciptionPrice = 100;
 
@@ -33,7 +34,7 @@ export default function Form() {
     paidImage: null
   });
 
-  const handleUpload = async () => {
+  const handleUpload = async (file) => {
     if (!file) {
       toast.error('Please select a file to upload');
       return;
@@ -41,25 +42,22 @@ export default function Form() {
 
     try {
       const downloadUrl = await uploadFileToFirebase(file);
-      if (isPaid) {
-        setFormValues({ ...formValues, paidImage: downloadUrl });
-      } else {
-        setFormValues({ ...formValues, unpaidImage: downloadUrl });
-      }
-      toast.success('File uploaded successfully');
+      return downloadUrl;
+      // toast.success('File uploaded successfully');
     } catch (error) {
       toast.error('File upload failed');
       console.error('Upload error:', error);
     }
   };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files?.[0];
-    setFile(selectedFile);
-  };
+  // const handleFileChange = (e) => {
+  //   const selectedFile = e.target.files?.[0];
+  //   setFile(selectedFile);
+  // };
 
   const submissionHandler = async () => {
     console.log('Form submitted:', formValues);
+
     if (formValues.price === 0 && subType === 'ppv') {
       toast.error('Please enter a price');
       return;
@@ -69,12 +67,15 @@ export default function Form() {
       return
     }
     try {
+      const previewFileUrl =  await handleUpload(previewFile);
+      const premiumFileUrl =  await handleUpload(premiumFile);
+
       const response = await axios.post(`${API_URL}/blinks/create`, {
         title: formValues.unpaidTitle,
         content: formValues.unpaidContent,
-        image:  formValues.unpaidImage,
+        image:  previewFileUrl,
         premiumTitle: formValues.paidTitle,
-        premiumImage: formValues.paidImage,
+        premiumImage: premiumFileUrl,
         premiumContent : formValues.paidContent,
         type: subType,
         price: formValues.price,
@@ -100,13 +101,29 @@ export default function Form() {
   }, [subType]);
 
   const handleNextClick = () => {
-    setFile(null);
+    // setFile(null);
     setIsPaid((value) => !value);
     setFormValues({
       ...formValues,
       payPerView: subType === 'ppv',
     });
   };
+
+  const onPremiumImageChange = (event) => {
+    const selectedFile = event.target.files?.[0];
+    setPremiumFile(selectedFile);
+    if (event.target.files && event.target.files[0]) {
+      setFormValues({ ...formValues, paidImage: URL.createObjectURL(event.target.files[0]) });
+    }
+   }
+
+  const onPreviewImageChange = (event) => {
+    const selectedFile = event.target.files?.[0];
+    setPreviewFile(selectedFile);
+    if (event.target.files && event.target.files[0]) {
+      setFormValues({ ...formValues, unpaidImage: URL.createObjectURL(event.target.files[0]) });
+    }
+   }
 
   const handleBlink = (pid) => {
     const prefix = 'https://dial.to/?action=solana-action%3A'
@@ -125,24 +142,28 @@ export default function Form() {
       {/* <div className={`w-full px-4 sm:px-10 lg:px-10 lg:w-[1000px] mt-12 mb-5 flex gap-10 ${finalPID != null && 'justify-center'}`}> */}
 
       {finalPID != null && (
-        <div className='mt-20 border pt-8 pb-4 px-10 flex flex-col gap-4 items-center text-center rounded-lg bg-white'>
-          <FaCheckCircle size={50}/>
-          <h1>Your Sublink is ready to be shared:</h1>
-          <div className='flex items-end'>
-            <h2 className='max-w-80 overflow-hidden'>{handleBlink(finalPID)}</h2><span>..</span>
-          </div>
-          <Button variant='outline' className="flex gap-1"
-            onClick={async () => {
-              await navigator.clipboard.writeText(handleBlink(finalPID));
-              toast.success('Link copied to clipboard');
-            }}
-          > <FaCopy /> Copy Link</Button>
+        <div>
+          <Card className="mt-20 flex flex-col h-min w-full sm:w-min sm:px-6 py-4">
+            <CardContent className="flex flex-col gap-3 p-4 px-6 items-center">
+              <FaCheckCircle size={50}  className='text-primaryColor'/>
+              <h1>Your Sublink is ready to be shared:</h1>
+              <div className='flex items-end text-center text-lg font-semibold text-gray-600'>
+                <h2 className='max-w-80 w-full overflow-hidden'>{handleBlink(finalPID)}</h2><span>..</span>
+              </div>
+              <Button className="flex gap-1 mt-2"
+                onClick={async () => {
+                  await navigator.clipboard.writeText(handleBlink(finalPID));
+                  toast.success('Link copied to clipboard');
+                }}
+              > <FaCopy/> Copy Link</Button>
+            </CardContent>
+          </Card>
         </div>
       )}
       
       {finalPID == null && (
         <div className={`w-full flex h-full`}>
-          <div className='flex bg-white border-t flex-col gap-4 flex-1 pl-28 px-20 pt-12'>
+          <div className='flex bg-white border-t flex-col gap-4 flex-1 pl-28 px-20 py-12 overflow-scroll'>
             <div className='flex flex-col gap-2'>
               <h1 className='font-bold text-2xl'>
                 { isPaid ? 'Premium Content' : 'Setup Preview' }
@@ -194,8 +215,13 @@ export default function Form() {
                   {isPaid ? 'Image' : 'Preview Image'}
                 </Label>
                 <div className='flex gap-2'>
-                  <Input id="file" type="file" onChange={handleFileChange}/>
-                  <Button onClick={handleUpload}>Upload</Button>
+                  {
+                    isPaid ? (
+                      <Input id="file" type="file" onChange={onPremiumImageChange}/>
+                    ) : (
+                      <Input id="file" type="file" onChange={onPreviewImageChange}/>
+                    )
+                  }
                 </div>
               </div>
             </div>
