@@ -22,9 +22,8 @@ function App() {
       <OktoProvider apiKey={OKTO_CLIENT_API_KEY} buildType={BuildType.SANDBOX}>
       <Routes >
         <Route path="/" element={<Home />} />
-        <Route path="/landing" element={<LandingPage />} />
-        <Route path="/landing2" element={<LandingPage2 />} />
-        <Route path="/home" element={<Home />} />
+        {/* <Route path="/landing" element={<LandingPage />} /> */}
+        <Route path="/home" element={<LandingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create" element={<Form />} />
         <Route path="/form" element={<CreateBlink />} />

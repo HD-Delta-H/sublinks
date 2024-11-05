@@ -5,14 +5,13 @@ import { AppBar } from "@/components/AppBar";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from './components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { uploadFileToFirebase } from './utils/uploadFileToFirebase';
 import toast from "react-hot-toast";
-import { useNavigate } from 'react-router-dom';
 import { FaCheckCircle } from "react-icons/fa";
 import { FaCopy } from "react-icons/fa";
+import SubTypeSelector from './components/SubTypeSelector';
 
 export default function Form() {
   const [isPaid, setIsPaid] = useState(false);
@@ -123,154 +122,159 @@ export default function Form() {
         <AppBar />
       </div>
 
-      <div className={`w-full px-4 sm:px-10 lg:px-10 lg:w-[1000px] mt-12 mb-5 flex gap-10 ${finalPID != null && 'justify-center'}`}>
-        {/* <Button onClick={handleBlink}>someting</Button> */}
+      {/* <div className={`w-full px-4 sm:px-10 lg:px-10 lg:w-[1000px] mt-12 mb-5 flex gap-10 ${finalPID != null && 'justify-center'}`}> */}
 
-        {finalPID != null && (
-          <div className='mt-10 border pt-8 pb-4 px-10 flex flex-col gap-4 items-center text-center rounded-lg bg-white'>
-            <FaCheckCircle size={50}/>
-            <h1>Your Sublink is ready to be shared:</h1>
-            <div className='flex items-end'>
-              <h2 className='max-w-80 overflow-hidden'>{handleBlink(finalPID)}</h2><span>..</span>
+      {finalPID != null && (
+        <div className='mt-20 border pt-8 pb-4 px-10 flex flex-col gap-4 items-center text-center rounded-lg bg-white'>
+          <FaCheckCircle size={50}/>
+          <h1>Your Sublink is ready to be shared:</h1>
+          <div className='flex items-end'>
+            <h2 className='max-w-80 overflow-hidden'>{handleBlink(finalPID)}</h2><span>..</span>
+          </div>
+          <Button variant='outline' className="flex gap-1"
+            onClick={async () => {
+              await navigator.clipboard.writeText(handleBlink(finalPID));
+              toast.success('Link copied to clipboard');
+            }}
+          > <FaCopy /> Copy Link</Button>
+        </div>
+      )}
+      
+      {finalPID == null && (
+        <div className={`w-full flex h-full`}>
+          <div className='flex bg-white border-t flex-col gap-4 flex-1 pl-28 px-20 pt-12'>
+            <div className='flex flex-col gap-2'>
+              <h1 className='font-bold text-2xl'>
+                { isPaid ? 'Premium Content' : 'Setup Preview' }
+              </h1>
+              <p>{ isPaid ? 'This is what users see after paying.' : 'This is what users see at first' }</p>
             </div>
-            <Button variant='outline' className="flex gap-1"
-              onClick={async () => {
-                await navigator.clipboard.writeText(handleBlink(finalPID));
-                toast.success('Link copied to clipboard');
-              }}
-            > <FaCopy /> Copy Link</Button>
-          </div>
-        )}
-        
-        {finalPID == null && <div className='flex flex-col gap-4 flex-1'>
-          <div className='flex flex-col gap-2'>
-            <h1 className='font-bold text-2xl'>
-              { isPaid ? 'Premium Content' : 'Setup Preview' }
-             </h1>
-            <p>{ isPaid ? 'This is what users see after paying.' : 'This is what users see at first' }</p>
-          </div>
 
-          <div className='gap-1 flex flex-col'>
-            <Label className="text-sm text-gray-500">
-              {isPaid ? 'Title' : 'Preview Title'}
-            </Label>
-            <Input
-              id={isPaid ? 'paidTitle' : 'unpaidTitle'}
-              name={isPaid ? 'paidTitle' : 'unpaidTitle'}
-              value={isPaid ? formValues.paidTitle : formValues.unpaidTitle}
-              onChange={handleInputChange}
-              className="text-md"
-            />
-          </div>
-
-          <div>
-            <Label className="text-sm text-gray-500">
-              {isPaid ? 'Content' : 'Preview Content'}
-            </Label>
-            <Textarea
-              name={isPaid ? 'paidContent' : 'unpaidContent'}
-              value={isPaid ? formValues.paidContent : formValues.unpaidContent}
-              onChange={handleInputChange}
-              className="bg-white text-md"
-            />
-          </div>
-
-          <div>
-            <div className="space-y-2">
-              <Label className="text-sm text-gray-500" htmlFor="file">
-                {isPaid ? 'Image' : 'Preview Image'}
-              </Label>
-              <div className='flex gap-2'>
-                <Input id="file" type="file" onChange={handleFileChange}/>
-                <Button onClick={handleUpload}>Upload</Button>
-              </div>
+            <div className='my-2 flex gap-4'>
+              <SubTypeSelector 
+                subType="ppv" 
+                currentSubType={subType} 
+                setSubType={setSubType}
+              />
+              <SubTypeSelector 
+                subType="subscription" 
+                currentSubType={subType} 
+                setSubType={setSubType}
+              />
             </div>
-          </div>
 
-          <div className='mt-3'>
-            <RadioGroup defaultValue={subType} onValueChange={setSubType} className="flex gap-4">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="ppv" />
-                <Label className="text-sm text-gray-500">Pay Per View</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="subscription" />
-                <Label className="text-sm text-gray-500">Part of Subscription</Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {subType === 'ppv' && (
-            <div>
+            <div className='gap-1 flex flex-col'>
               <Label className="text-sm text-gray-500">
-                Price
+                {isPaid ? 'Title' : 'Preview Title'}
               </Label>
               <Input
-                name="price"
-                value={formValues.price}
+                id={isPaid ? 'paidTitle' : 'unpaidTitle'}
+                name={isPaid ? 'paidTitle' : 'unpaidTitle'}
+                value={isPaid ? formValues.paidTitle : formValues.unpaidTitle}
                 onChange={handleInputChange}
                 className="text-md"
               />
             </div>
-          )}
-          
-        </div>}
 
-        {finalPID == null && <div className='flex flex-col justify-start pt-10 w-2/5'>
-          <Card className="flex flex-col h-min shadow-none pt-2">
-            <CardContent className="flex flex-col gap-2 p-4">
-              {isPaid ? (
-                <img
-                  src={ formValues.paidImage !== null ? formValues.paidImage : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
-                  alt={isPaid ? formValues.paidTitle : formValues.unpaidTitle}
-                  width={400}
-                  height={300}
-                  className="object-cover h-full w-full rounded-lg"
-                /> )
-                : (
+            <div>
+              <Label className="text-sm text-gray-500">
+                {isPaid ? 'Content' : 'Preview Content'}
+              </Label>
+              <Textarea
+                name={isPaid ? 'paidContent' : 'unpaidContent'}
+                value={isPaid ? formValues.paidContent : formValues.unpaidContent}
+                onChange={handleInputChange}
+                className="bg-white text-md"
+              />
+            </div>
+
+            <div>
+              <div className="space-y-2">
+                <Label className="text-sm text-gray-500" htmlFor="file">
+                  {isPaid ? 'Image' : 'Preview Image'}
+                </Label>
+                <div className='flex gap-2'>
+                  <Input id="file" type="file" onChange={handleFileChange}/>
+                  <Button onClick={handleUpload}>Upload</Button>
+                </div>
+              </div>
+            </div>
+
+            {subType === 'ppv' && (
+              <div className="space-y-2">
+                <Label className="text-sm text-gray-500">
+                  Price
+                </Label>
+                <Input
+                  name="price"
+                  value={formValues.price}
+                  onChange={handleInputChange}
+                  className="text-md"
+                />
+              </div>
+            )}
+
+            <div className={`flex w-full justify-end mt-4`}>
+              <div className='flex w-full gap-3 max-w-96 '>
+                <Button onClick={handleNextClick} variant={'outline'} className="w-full h-10">
+                  {isPaid ? 'Back' : 'Next'}
+                </Button>
+                <Button onClick={submissionHandler} disabled={!isPaid} className="w-full h-10">
+                  Create
+                </Button>
+              </div>
+            </div>
+            
+          </div>
+
+          <div className='flex flex-col bg-[#F9F9F9] h-full justify-center w-[600px] px-20'>
+            <Card className="flex flex-col h-min pt-2 mb-28">
+              <CardContent className="flex flex-col gap-2 p-4 px-6">
+                {isPaid ? (
                   <img
-                    src={ formValues.unpaidImage !== null ? formValues.unpaidImage : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
+                    src={ formValues.paidImage !== null ? formValues.paidImage : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
                     alt={isPaid ? formValues.paidTitle : formValues.unpaidTitle}
                     width={400}
                     height={300}
                     className="object-cover h-full w-full rounded-lg"
-                  />
-                )
-              }
+                  /> )
+                  : (
+                    <img
+                      src={ formValues.unpaidImage !== null ? formValues.unpaidImage : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
+                      alt={isPaid ? formValues.paidTitle : formValues.unpaidTitle}
+                      width={400}
+                      height={300}
+                      className="object-cover h-full w-full rounded-lg"
+                    />
+                  )
+                }
 
-              <div className="flex flex-col gap-1 mb-2">
-                <div className="font-bold text-lg break-words">
-                  {isPaid ? formValues.paidTitle : formValues.unpaidTitle}
+                <div className="flex flex-col gap-1 mb-2">
+                  <div className="font-bold text-lg break-words">
+                    {isPaid ? formValues.paidTitle : formValues.unpaidTitle}
+                  </div>
+                  <div>{isPaid ? formValues.paidContent : formValues.unpaidContent}</div>
                 </div>
-                <div>{isPaid ? formValues.paidContent : formValues.unpaidContent}</div>
-              </div>
 
-              {!isPaid ? (
-                <div className="flex flex-col gap-2">
-                  {formValues.payPerView ? (
-                    <Button>View Once For ${formValues.price}</Button>
-                  ) : (
-                    <div className="flex flex-col gap-2">
-                      <Button>Verify Subscription</Button>
-                      <Button>Subscribe For ${subsciptionPrice}</Button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Button disabled>Purchased</Button>
-              )}
-            </CardContent>
-          </Card>
-          <div className={`flex justify-end w-full gap-3 mt-4`}>
-            <Button onClick={handleNextClick} variant={'outline'} className="w-full">
-              {isPaid ? 'Back' : 'Next'}
-            </Button>
-            <Button onClick={submissionHandler} disabled={!isPaid} className="w-full">
-              Create
-            </Button>
+                {!isPaid ? (
+                  <div className="flex flex-col gap-2">
+                    {formValues.payPerView ? (
+                      <Button>View Once For ${formValues.price}</Button>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        <Button >Verify Subscription</Button>
+                        <Button>Subscribe For ${subsciptionPrice}</Button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Button disabled>Purchased</Button>
+                )}
+              </CardContent>
+            </Card>
           </div>
-        </div>}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
