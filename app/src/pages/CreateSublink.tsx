@@ -1,6 +1,6 @@
 import { useEffect, useState, ChangeEvent } from 'react'
 import axios from 'axios'
-import { API_URL } from './App'
+import { API_URL } from '../App'
 import { AppBar } from "@/components/AppBar";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaCopy } from "react-icons/fa";
+import { uploadFileToFirebase } from '@/utils/uploadFileToFirebase';
 
 interface FormValues {
   unpaidTitle: string;
@@ -41,17 +42,8 @@ const SubTypeSelector = ({ subType, currentSubType, setSubType }: SubTypeSelecto
   );
 };
 
-const uploadFileToFirebase = async (file: File): Promise<string> => {
-  // Simplified mock implementation
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const mockURL = `https://firebasestorage.example.com/${file.name}`;
-      resolve(mockURL);
-    }, 1000);
-  });
-};
 
-export default function Form() {
+export default function CreateSublink() {
   const [isPaid, setIsPaid] = useState(false);
   const [subType, setSubType] = useState('ppv');
   const [finalPID, setFinalPID] = useState<string | null>(null);
@@ -78,6 +70,10 @@ export default function Form() {
 
     try {
       const downloadUrl = await uploadFileToFirebase(file);
+      if (!downloadUrl) {
+        toast.error('File upload failed');
+        return '';
+      }
       return downloadUrl;
     } catch (error) {
       toast.error('File upload failed');
@@ -287,7 +283,7 @@ export default function Form() {
             </div>
           </div>
 
-          <div className='flex flex-col bg-[#F9F9F9] h-min md:min-h-screen justify-center w-full md:w-[400px] lg:w-[500px] xl:w-[600px] p-2 sm:px-6 md:px-10 xl:px-20'>
+          <div className='flex flex-col bg-[#F9F9F9] h-min md:min-h-screen justify-center w-full md:w-[400px] lg:w-[500px] xl:w-[600px] p-2 sm:px-6 xl:px-20'>
             <Card className="flex flex-col h-min pt-2 mb-28">
               <CardContent className="flex flex-col gap-2 p-4 px-6">
                 {isPaid ? (

@@ -5,8 +5,8 @@ import LandingPage from './pages/LandingPage'
 import { Home } from './pages/Home'
 import { Dashboard } from './pages/Dashboard'
 import { Account } from './pages/Account'
+import CreateSublink from './pages/CreateSublink'
 export const API_URL = 'https://sublinks.onrender.com'
-import Form from './form'
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<LandingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create" element={<Form />} />
+        <Route path="/create" element={<CreateSublink />} />
         <Route path="/account" element={<Account />} />
         {/* <Route path="/demo" element={<Demo />} /> */}
       </Routes>

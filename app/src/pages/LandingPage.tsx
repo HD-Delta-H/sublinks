@@ -1,8 +1,7 @@
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 // Sample product data - replace with actual images or import real assets
 const products = [
@@ -57,56 +56,33 @@ const features = [
   }
 ];
 
-const webContent = {
-  'heading': 'Turn Your Twitter Followers into a Reliable Income Stream',
-  'subheading': 'Get paid to share your knowledge with your followers',
-};
+// const webContent = {
+//   'heading': 'Turn Your Twitter Followers into a Reliable Income Stream',
+//   'subheading': 'Get paid to share your knowledge with your followers',
+// };
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  // const [walletAddress, setWalletAddress] = useState<string | null>(null);
 
   useEffect(() => {
     // Get wallet address from localStorage if available
     const storedWalletAddress = localStorage.getItem('walletAddress');
     if (storedWalletAddress) {
-      setWalletAddress(storedWalletAddress);
+      // setWalletAddress(storedWalletAddress);
     }
   }, []);
-
-  const handleGoogleLogin = (credentialResponse: CredentialResponse) => {
-    console.log("Google login response:", credentialResponse);
-    
-    try {
-      // Simplified auth without Okto
-      const randomWalletAddress = `0x${Math.random().toString(16).slice(2, 10)}`;
-      localStorage.setItem('walletAddress', randomWalletAddress);
-      setWalletAddress(randomWalletAddress);
-      
-      navigate("/");
-    } catch (error) {
-      console.error("Authentication error:", error);
-    }
-  };
 
   return (
     <div className='flex flex-col w-full'>
       <div className="w-full h-full bg-[#0F1017] pb-10 flex flex-col items-center text-white">
         <div className='h-20 text-white flex justify-between w-full items-center px-4 sm:px-10'>
           <h3 className='text-xl font-bold'>Sublinks</h3>
-          {walletAddress == null 
-            ? <GoogleLogin
-                onSuccess={handleGoogleLogin}
-                onError={() => {
-                  console.log("Login Failed");
-                }}
-              />
-            : <Button 
-                onClick={() => navigate("/")}
-                variant={'outline'} size={'appBar'} className="px-4 py-1 bg-primaryGreen/10 border-primaryGreen/50 border-2 rounded-full">
-                Dashboard
-              </Button>
-          }
+          <Button 
+            onClick={() => navigate("/")}
+            variant={'outline'} className="px-4 py-1 bg-primaryGreen/10 border-primaryGreen/50 border-2 rounded-full">
+            Dashboard
+          </Button>
         </div>
         <div className='flex flex-col gap-8 max-w-[900px] mt-10 px-4'>
           <h1 className="text-4xl sm:text-7xl font-black leading-none gap-y-10">
@@ -124,19 +100,11 @@ const LandingPage = () => {
 
             <p className='text-gray-400 hidden sm:flex'>or</p>
 
-            {walletAddress == null 
-              ? <GoogleLogin
-                  onSuccess={handleGoogleLogin}
-                  onError={() => {
-                    console.log("Login Failed");
-                  }}
-                />
-              : <Button 
-                  onClick={() => navigate("/")} 
-                  className="bg-[#161B22] h-14 hidden sm:flex hover:bg-[#161B22]/90 text-md font-normal px-4">
-                  Dashboard
-                </Button>
-            }
+            <Button 
+              onClick={() => navigate("/")} 
+              className="bg-[#161B22] h-14 hidden sm:flex hover:bg-[#161B22]/90 text-md font-normal px-4">
+              Dashboard
+            </Button>
           </div>
         </div>
       </div>
@@ -190,19 +158,11 @@ const LandingPage = () => {
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl sm:text-5xl font-bold mb-6 text-gray-900">Ready to Get Started?</h2>
           <p className="text-xl text-gray-600 mb-10">Join thousands of creators already using Sublinks to monetize their content</p>
-          {walletAddress == null 
-            ? <GoogleLogin
-                onSuccess={handleGoogleLogin}
-                onError={() => {
-                  console.log("Login Failed");
-                }}
-              />
-            : <Button 
-                onClick={() => navigate("/")}
-                className="bg-black text-white px-8 py-6 text-lg rounded-md hover:bg-gray-800">
-                Go to Dashboard
-              </Button>
-          }
+          <Button 
+            onClick={() => navigate("/")}
+            className="bg-black text-white px-8 py-6 text-lg rounded-md hover:bg-gray-800">
+            Go to Dashboard
+          </Button>
         </div>
       </div>
 

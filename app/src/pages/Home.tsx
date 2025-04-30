@@ -2,9 +2,9 @@ import { AppBar } from "@/components/AppBar";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { API_URL } from "@/App";
-
+import { Link } from "react-router-dom";
 interface Blink {
   _id: string;
   title: string;
@@ -50,12 +50,14 @@ export const Home = () => {
         <AppBar/>
       </div>
 
-      <div className="w-full h-full px-4 sm:px-10 lg:px-10 lg:w-[900px] mt-12 mb-5 flex flex-col gap-3">
+      <div className="w-full h-full px-4 sm:px-8 md:px-16 xl:px-32  mt-12 mb-5 flex flex-col gap-3">
         <div className="flex justify-between mb-2">
           <h2 className="text-2xl font-bold">Explore Sublinks</h2>
-          <Button onClick={()=>{window.open("https://x.com/sublinks_","_blank")}} className="px-8">Check out on our Twitter</Button>
+          <Link to="https://x.com/sublinks_" target="_blank">
+            <Button className="px-8">Check out on our Twitter</Button>
+          </Link>
         </div>
-        <div className="grid sm:grid-cols-2 gap-10">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {
             blinks.map((item) => (
               <BlinkCard key={item._id} item={item} />
@@ -73,40 +75,45 @@ interface BlinkCardProps {
 
 const BlinkCard = ({ item }: BlinkCardProps) => {
   return (
-    <Card key={item._id} className="flex flex-col shadow-none">
-      <CardHeader>
-        <CardTitle className="flex flex-col ">
-            <h1 className="text-lg">{item.premiumTitle}</h1>
-            <h3 className="text-md text-gray-300">{item.title}</h3>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <div className="flex flex-col sm:flex-row gap-4 mb-4">
-          <div className="flex-1">
+    <Card className="flex flex-col h-min pt-2">
+      <CardContent className="flex flex-col gap-2 p-4 px-6">
+        <div className="h-56 w-full">
+          {item.type === 'ppv' ? (
             <img
-              src={item.image}
+              src={ item.image !== null ? item.image : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
               alt={item.title}
               width={400}
               height={300}
-              className="w-full h-48 object-cover rounded-md"
-            />
-            <p className="text-sm text-gray-600 mt-2">Normal Image</p>
-          </div>
-          <div className="flex-1">
-            <img
-              src={item.premiumImage}
-              alt={item.premiumTitle}
-              width={400}
-              height={300}
-              className="w-full h-48 object-cover rounded-md"
-            />
-            <p className="text-sm text-gray-600 mt-2">Premium Image</p>
-          </div>
+              className="object-cover h-full w-full rounded-lg"
+            /> )
+            : (
+              <img
+                src={ item.premiumImage !== null ? item.premiumImage : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
+                alt={item.premiumTitle}
+                width={400}
+                height={300}
+                className="object-cover h-full w-full rounded-lg"
+              />
+            )
+          }
         </div>
-        <div className="flex gap-2">
-          <div className="flex-1 flex justify-center bg-gray-100 rounded-lg"> 0 v </div>
-          <div className="flex-1 flex justify-center bg-gray-100 rounded-lg"> 0 e </div>
-          <div className="flex-1 flex justify-center bg-gray-100 rounded-lg"> 0 p </div>
+
+        <div className="flex flex-col gap-1 mb-2">
+          <div className="font-bold text-lg break-words">
+            {item.type === 'ppv' ? item.title : item.premiumTitle}
+          </div>
+          <div>{item.type === 'ppv' ? item.content : item.premiumContent}</div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          {item.type === 'ppv' ? (
+            <Button>View Once For ${item.price}</Button>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <Button>Verify Subscription</Button>
+              <Button>Subscribe For ${item.price}</Button>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

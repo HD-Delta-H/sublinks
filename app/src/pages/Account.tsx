@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BiRefresh } from "react-icons/bi";
 import { API_URL } from "@/App";
-
+import { useUser } from "@civic/auth-web3/react";
 interface UserDetails {
   _id: string;
   name: string;
@@ -18,6 +18,7 @@ interface UserDetails {
 }
 
 export const Account = () => {
+  const { user } = useUser();
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -180,59 +181,35 @@ export const Account = () => {
         <AppBar/>
       </div>
     
-      {!walletAddress ? (
-        <div className="w-full py-16 mt-12 flex flex-col items-center justify-center">
-          <img src="https://picsum.photos/270/270" alt="Not logged in" width={270} />
-          <div className="text-xl my-2 font-bold text-gray-600">Not Logged in</div>
-          <div className="text-gray-400 max-w-[500px] w-full text-center">If you are having trouble logging in, please try again. </div>
-          <div className="text-gray-400 max-w-[500px] w-full text-center">High server traffic can sometimes cause delays, but a second or third attempt should do the trick!</div>
-        </div>
+      {!user ? (
+        <Card className="mt-12 px-32 py-12">
+          Loading...
+        </Card>
       ) : (
         <div className="container mx-auto px-4 py-8 max-w-[800px]">
           <div className="flex flex-col space-y-8 max-w-4xl mx-auto">
             <Card>
               <CardContent>
-                <div className="space-y-4 mt-8">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-4 flex mt-8 gap-10 items-center justify-center">
+                  <img src={user?.picture} alt="Profile" className="mt-3 w-32 h-32 rounded-full" />
+                  <div className="flex flex-col gap-4 w-full">
                     <div className="space-y-1.5">
                       <label className="text-sm text-gray-500" htmlFor="name">Name</label>
                       <Input
                         id="name"
-                        value={name}
+                        value={user?.name}
+                        disabled
+                        className="text-black"
                         onChange={(e) => setName(e.target.value)}
                       />
                     </div>
                     
                     <div className="space-y-1.5">
                       <label className="text-sm text-gray-500" htmlFor="email">Email</label>
-                      <Input id="email" value={email} disabled />
-                    </div>
-                    
-                    <div className="space-y-1.5">
-                      <label className="text-sm text-gray-500" htmlFor="walletAddress">Wallet Address</label>
-                      <Input id="walletAddress" value={walletAddress} disabled />
+                      <Input id="email" value={user?.email} disabled />
                     </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-sm text-gray-500" htmlFor="subscribers">Subscribers</label>
-                      <Input id="subscribers" value={subscribers} disabled />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-sm text-gray-500" htmlFor="subPrice">Subscription Price</label>
-                      <Input
-                        id="subPrice"
-                        value={subPrice}
-                        onChange={(e) => setSubPrice(e.target.value)}
-                      />
-                    </div>
                   </div>
-                  <Button 
-                    className="w-full sm:w-auto" 
-                    onClick={handleUpdateDetails}
-                  >
-                    Update Details
-                  </Button>
                 </div>
               </CardContent>
             </Card>
