@@ -1,16 +1,19 @@
 import { Button } from "./ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserButton, useUser } from "@civic/auth-web3/react";
+import { saveUserToMongo } from "@/utils/saveUserToMongo";
+import { useEffect } from "react";
 
 export const AppBar = () => {
   const { user } = useUser();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // const handleUserClick = () => {
-  //   console.log(user);
-  // }
-
+  useEffect(() => {
+    if (user) {
+      saveUserToMongo(user.name, user.email, user.walletAddress);
+    }
+  }, [user]);
 
   return (
     <div className="flex flex-col items-center justify-center">
