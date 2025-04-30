@@ -1,13 +1,20 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
-import { CivicAuthProvider } from '@civic/auth-web3/react';
+import './index.css'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <CivicAuthProvider clientId={import.meta.env.VITE_CIVIC_CLIENT_ID}>
-      <App />
-    </CivicAuthProvider>
-  </StrictMode>,
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+
+const queryClient = new QueryClient()
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <App />
+      </GoogleOAuthProvider>
+    </QueryClientProvider>
+  </React.StrictMode>,
 )
