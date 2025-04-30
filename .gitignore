@@ -1,2 +1,6 @@
 backend/.env
 backend/node_modules
+new-frontend/
+**/.env
+**/.env.local
+**/.DS_Store

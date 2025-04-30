@@ -30,7 +30,7 @@ const SubTypeSelector = ({ subType, currentSubType, setSubType }: SubTypeSelecto
   return (
     <div
       onClick={() => setSubType(subType)}
-      className={`cursor-pointer flex px-4 py-2 rounded-lg ${
+      className={`cursor-pointer text-sm flex px-4 py-2 rounded-lg ${
         currentSubType === subType
           ? 'bg-black text-white'
           : 'bg-white text-gray-500 border'
@@ -194,8 +194,8 @@ export default function Form() {
       )}
       
       {finalPID == null && (
-        <div className="w-full flex h-full">
-          <div className='flex bg-white border-t flex-col gap-4 flex-1 pl-28 px-20 py-12 overflow-scroll'>
+        <div className="w-full flex md:flex-row flex-col h-full">
+          <div className='flex bg-white border-t flex-col gap-4 flex-1 px-4 sm:px-6 lg:px-20 py-12 overflow-scroll'>
             <div className='flex flex-col gap-2'>
               <h1 className='font-bold text-2xl'>
                 {isPaid ? 'Premium Content' : 'Setup Preview'}
@@ -273,35 +273,65 @@ export default function Form() {
               </div>
             )}
 
-            <div className="flex w-full justify-end mt-4">
-              <div className='flex w-full gap-3 max-w-96'>
-                <Button onClick={handleNextClick} variant={'outline'} className="w-full h-10">
+            <div className="flex w-full justify-end mt-4 gap-2">
+                <Button onClick={handleNextClick} variant={'outline'} className="md:w-40 h-10">
                   {isPaid ? 'Back' : 'Next'}
                 </Button>
-                <Button onClick={submissionHandler} disabled={!isPaid} className="w-full h-10">
-                  Create
-                </Button>
-              </div>
+                {
+                  isPaid && (
+                    <Button onClick={submissionHandler} disabled={!isPaid} className="md:w-40 h-10">
+                      Create
+                    </Button>
+                  )
+                }
             </div>
           </div>
 
-          <div className='hidden lg:flex max-w-[500px] w-full h-screen bg-gray-50 items-center justify-center'>
-            <div className='w-[300px] bg-white p-4 rounded-md shadow-sm flex flex-col gap-2'>
-              <h3 className='font-bold'>{isPaid ? formValues.paidTitle : formValues.unpaidTitle || 'Title preview'}</h3>
-              <p className='text-sm h-20 overflow-hidden'>{isPaid ? formValues.paidContent : formValues.unpaidContent || 'Content preview...'}</p>
-              {((isPaid && formValues.paidImage) || (!isPaid && formValues.unpaidImage)) && (
-                <img 
-                  src={isPaid ? formValues.paidImage ?? '' : formValues.unpaidImage ?? ''} 
-                  alt="Preview" 
-                  className='w-full h-40 object-cover rounded-md'
-                />
-              )}
-              {!isPaid && (
-                <Button size="sm" className='mt-2 w-full'>
-                  {subType === 'ppv' ? `Pay $${formValues.price || '0.00'}` : 'Subscribe'}
-                </Button>
-              )}
-            </div>
+          <div className='flex flex-col bg-[#F9F9F9] h-min md:min-h-screen justify-center w-full md:w-[400px] lg:w-[500px] xl:w-[600px] p-2 sm:px-6 md:px-10 xl:px-20'>
+            <Card className="flex flex-col h-min pt-2 mb-28">
+              <CardContent className="flex flex-col gap-2 p-4 px-6">
+                {isPaid ? (
+                  <img
+                    src={ formValues.paidImage !== null ? formValues.paidImage : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
+                    alt={isPaid ? formValues.paidTitle : formValues.unpaidTitle}
+                    width={400}
+                    height={300}
+                    className="object-cover h-full w-full rounded-lg"
+                  /> )
+                  : (
+                    <img
+                      src={ formValues.unpaidImage !== null ? formValues.unpaidImage : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'}
+                      alt={isPaid ? formValues.paidTitle : formValues.unpaidTitle}
+                      width={400}
+                      height={300}
+                      className="object-cover h-full w-full rounded-lg"
+                    />
+                  )
+                }
+
+                <div className="flex flex-col gap-1 mb-2">
+                  <div className="font-bold text-lg break-words">
+                    {isPaid ? formValues.paidTitle : formValues.unpaidTitle}
+                  </div>
+                  <div>{isPaid ? formValues.paidContent : formValues.unpaidContent}</div>
+                </div>
+
+                {!isPaid ? (
+                  <div className="flex flex-col gap-2">
+                    {formValues.payPerView ? (
+                      <Button>View Once For ${formValues.price}</Button>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        <Button>Verify Subscription</Button>
+                        <Button>Subscribe For ${formValues.price}</Button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Button disabled>Purchased</Button>
+                )}
+              </CardContent>
+            </Card>
           </div>
         </div>
       )}
