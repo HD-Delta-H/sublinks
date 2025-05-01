@@ -6,7 +6,7 @@ import { Home } from './pages/Home'
 import { Dashboard } from './pages/Dashboard'
 import { Account } from './pages/Account'
 import CreateSublink from './pages/CreateSublink'
-export const API_URL = 'http://localhost:8080'
+export const API_URL = "https://sublinks.onrender.com";
 
 function App() {
   return (
