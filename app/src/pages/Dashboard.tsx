@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { API_URL } from "@/App";
-
+import { useUser } from "@civic/auth-web3/react";
 interface Blink {
   _id: string;
   title: string;
@@ -27,12 +27,19 @@ interface Blink {
 }
 
 export const Dashboard = () => {
+  const { user } = useUser();
   const [blinks, setBlinks] = useState<Blink[]>([]);
   const navigate = useNavigate();
+
+  const getCreatorId = async () => {
+    const userData = await fetch(`${API_URL}/creator/email/${user?.email}`);
+    const data2 = await userData.json();
+    return data2._id;
+  }
   
   const fetchBlinks = async () => {
     try {
-      const userId = localStorage.getItem("id");
+      const userId = await getCreatorId();
       const response = await axios.get(`${API_URL}/blinks/creator/${userId}`);
       const data = response.data;
       console.log('Blinks:', data);
@@ -53,27 +60,12 @@ export const Dashboard = () => {
         <AppBar/>
       </div>
 
-      <div className="w-full h-full px-4 sm:px-10 lg:px-10 lg:w-[900px] mt-12 mb-5 flex flex-col gap-3">
-        <div className="flex gap-4 mb-5">
-          <div className="bg-white flex flex-col gap-1 border-gray-200 border w-full rounded-lg px-5 p-3">
-            <h1 className="text-lg font-semibold text-gray-400">Total Revenue</h1>
-            <p className="text-4xl font-bold text-gray-600">$312</p>
-          </div>
-          <div className="bg-white flex flex-col gap-1 border-gray-200 border w-full rounded-lg px-5 p-3">
-            <h1 className="text-lg font-semibold text-gray-400">Avg Engagement</h1>
-            <p className="text-4xl font-bold text-gray-600">21</p>
-          </div>
-          <div className="bg-white flex flex-col gap-1 border-gray-200 border w-full rounded-lg px-5 p-3">
-            <h1 className="text-lg font-semibold text-gray-400">No. of Subscribers</h1>
-            <p className="text-4xl font-bold text-gray-600">57</p>
-          </div>
-        </div>
-
+      <div className="w-full h-full px-4 sm:px-8 xl:px-32 mt-12 mb-5 flex flex-col gap-3">
         <div className="flex justify-between mb-2">
           <h2 className="text-2xl font-bold">Your Sublinks</h2>
           <Button onClick={() => navigate('/create')} className="px-8">Create</Button>
         </div>
-        <div className="grid sm:grid-cols-2 gap-10">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {
             blinks.map((item) => (
               <BlinkCard key={item._id} item={item} />
@@ -120,11 +112,6 @@ const BlinkCard = ({ item }: BlinkCardProps) => {
             />
             <p className="text-sm text-gray-600 mt-2">Premium Image</p>
           </div>
-        </div>
-        <div className="flex gap-2">
-          <div className="flex-1 flex justify-center bg-gray-100 rounded-lg"> 0 v </div>
-          <div className="flex-1 flex justify-center bg-gray-100 rounded-lg"> 0 e </div>
-          <div className="flex-1 flex justify-center bg-gray-100 rounded-lg"> 0 p </div>
         </div>
       </CardContent>
     </Card>

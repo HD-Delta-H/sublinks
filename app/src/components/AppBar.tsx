@@ -12,6 +12,8 @@ export const AppBar = () => {
   useEffect(() => {
     if (user) {
       saveUserToMongo(user.name, user.email);
+    } else {
+      navigate('/');
     }
   }, [user]);
 
