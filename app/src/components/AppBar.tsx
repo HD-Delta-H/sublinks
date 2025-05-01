@@ -11,7 +11,7 @@ export const AppBar = () => {
 
   useEffect(() => {
     if (user) {
-      saveUserToMongo(user.name, user.email, user.walletAddress);
+      saveUserToMongo(user.name, user.email);
     }
   }, [user]);
 

@@ -9,7 +9,8 @@ import toast from "react-hot-toast";
 import { FaCheckCircle } from "react-icons/fa";
 import { FaCopy } from "react-icons/fa";
 import { uploadFileToFirebase } from '@/utils/uploadFileToFirebase';
-
+import { useUser } from '@civic/auth-web3/react';
+import { useNavigate } from 'react-router-dom';
 interface FormValues {
   unpaidTitle: string;
   paidTitle: string;
@@ -44,6 +45,8 @@ const SubTypeSelector = ({ subType, currentSubType, setSubType }: SubTypeSelecto
 
 
 export default function CreateSublink() {
+  const { user } = useUser();
+  const navigate = useNavigate();
   const [isPaid, setIsPaid] = useState(false);
   const [subType, setSubType] = useState('ppv');
   const [finalPID, setFinalPID] = useState<string | null>(null);
@@ -82,6 +85,17 @@ export default function CreateSublink() {
     }
   };
 
+  const getCreatorId = async () => {
+    const userData = await fetch(`${API_URL}/creator/email/${user?.email}`);
+    const data2 = await userData.json();
+    if (data2.walletAddress === null || data2.walletAddress === undefined || data2.walletAddress === "") {
+      toast.error('Please connect your wallet to create a Sublink.');
+      navigate('/account');
+      return;
+    }
+    return data2._id;
+  }
+
   const submissionHandler = async () => {
     console.log('Form submitted:', formValues);
 
@@ -98,6 +112,8 @@ export default function CreateSublink() {
       const previewFileUrl = await handleUpload(previewFile);
       const premiumFileUrl = await handleUpload(premiumFile);
 
+      const creatorId = await getCreatorId();
+
       const response = await axios.post(`${API_URL}/blinks/create`, {
         title: formValues.unpaidTitle,
         content: formValues.unpaidContent,
@@ -107,7 +123,7 @@ export default function CreateSublink() {
         premiumContent: formValues.paidContent,
         type: subType,
         price: formValues.price,
-        creator: localStorage.getItem("id"),
+        creator: creatorId,
       });
   
       console.log('Success:', response.data._id);
@@ -162,6 +178,10 @@ export default function CreateSublink() {
     const encodedURL = encodeURIComponent(url);
     return prefix + encodedURL + postfix;
   };
+
+  useEffect(() => {
+    getCreatorId();
+  }, []);
 
   return (
     <div className="min-h-screen flex-col flex items-center bg-gray-50">
